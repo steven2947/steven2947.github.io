@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  <title>可乐的小屋</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  
+  
+  
+  <meta name="description" content="Android Gesture 手势研究怎么理解一个手势,就是在屏幕上,手画一个符号就是一个手势,它代表了用户的一个意图,也就是用户希望程序做点什么,一般程序大多数是通过按钮,按钮上有对应的文字,这样进行人机交互,而手势也是很多地方会使用到,而常用的手势好像下拉刷新,用户希望列表内容下拉一下就有新的信息,双指缩放等等,一般这些手势都是跟对应的view绑定起来,而今天介绍的都是方法是可以不绑定vie">
+<meta property="og:type" content="article">
+<meta property="og:title" content="可乐的小屋">
+<meta property="og:url" content="https://steven2947.github.io/2019/05/29/Android Gesture 手势研究/index.html">
+<meta property="og:site_name" content="可乐的小屋">
+<meta property="og:description" content="Android Gesture 手势研究怎么理解一个手势,就是在屏幕上,手画一个符号就是一个手势,它代表了用户的一个意图,也就是用户希望程序做点什么,一般程序大多数是通过按钮,按钮上有对应的文字,这样进行人机交互,而手势也是很多地方会使用到,而常用的手势好像下拉刷新,用户希望列表内容下拉一下就有新的信息,双指缩放等等,一般这些手势都是跟对应的view绑定起来,而今天介绍的都是方法是可以不绑定vie">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/26893-d73329f7da44c6ba.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2019-05-29T04:16:18.551Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="可乐的小屋">
+<meta name="twitter:description" content="Android Gesture 手势研究怎么理解一个手势,就是在屏幕上,手画一个符号就是一个手势,它代表了用户的一个意图,也就是用户希望程序做点什么,一般程序大多数是通过按钮,按钮上有对应的文字,这样进行人机交互,而手势也是很多地方会使用到,而常用的手势好像下拉刷新,用户希望列表内容下拉一下就有新的信息,双指缩放等等,一般这些手势都是跟对应的view绑定起来,而今天介绍的都是方法是可以不绑定vie">
+<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/26893-d73329f7da44c6ba.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+  
+    <link rel="alternate" href="/atom.xml" title="可乐的小屋" type="application/atom+xml">
+  
+
+  
+
+  <link rel="icon" href="/css/images/logo.jpg">
+  <link rel="apple-touch-icon" href="/css/images/logo.jpg">
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans|Montserrat:700" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,300italic,400italic" rel="stylesheet" type="text/css">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+  <style type="text/css">
+    @font-face{font-family:futura-pt; src:url("css/fonts/FuturaPTBold.otf") format("woff");font-weight:500;font-style:normal;}
+    @font-face{font-family:futura-pt-light; src:url("css/fonts/FuturaPTBook.otf") format("woff");font-weight:lighter;font-style:normal;}
+    @font-face{font-family:futura-pt-italic; src:url("css/fonts/FuturaPTBookOblique.otf") format("woff");font-weight:400;font-style:italic;}
+}
+
+  </style>
+  <link rel="stylesheet" href="/css/style.css">
+
+  <script src="/js/jquery-3.1.1.min.js"></script>
+  <script src="/js/bootstrap.js"></script>
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="/css/bootstrap.css">
+
+  
+    <link rel="stylesheet" href="/css/dialog.css">
+  
+
+  
+
+  
+    <link rel="stylesheet" href="/css/header-post.css">
+  
+
+  
+  
+  
+    <link rel="stylesheet" href="/css/vdonate.css">
+  
+
+</head>
+</html>
+
+
+  <body data-spy="scroll" data-target="#toc" data-offset="50">
+
+
+  
+  <div id="container">
+    <div id="wrap">
+      
+        <header>
+
+    <div id="allheader" class="navbar navbar-default navbar-static-top" role="navigation">
+        <div class="navbar-inner">
+          
+          <div class="container"> 
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+
+            
+              <a class="brand" style="
+                 margin-top: 0px;" href="#" data-toggle="modal" data-target="#myModal">
+                  <img width="124px" height="124px" alt="Hike News" src="/css/images/logo.jpg">
+              </a>
+            
+            
+            <div class="navbar-collapse collapse">
+              <ul class="hnav navbar-nav">
+                
+                  <li> <a class="main-nav-link" href="/">Home</a> </li>
+                
+                  <li> <a class="main-nav-link" href="/archives">Archives</a> </li>
+                
+                  <li> <a class="main-nav-link" href="/categories">Categories</a> </li>
+                
+                  <li> <a class="main-nav-link" href="/tags">Tags</a> </li>
+                
+                  <li> <a class="main-nav-link" href="/about">About</a> </li>
+                
+                  <li><div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder>
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="Type something...">
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: 'Posts',
+            PAGES: 'Pages',
+            CATEGORIES: 'Categories',
+            TAGS: 'Tags',
+            UNTITLED: '(Untitled)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+</div></li>
+            </ul></div>
+          </div>
+                
+      </div>
+    </div>
+
+</header>
+
+
+
+      
+            
+      <div id="content" class="outer">
+        
+          <section id="main" style="float:none;"><article id="post-Android Gesture 手势研究" style="width: 75%; float:left;" class="article article-type-post" itemscope itemprop="blogPost">
+  <div id="articleInner" class="article-inner">
+    
+    
+    <div class="article-meta">
+      
+	<a href="/2019/05/29/Android Gesture 手势研究/" class="article-date">
+	  <time datetime="2019-05-29T02:25:02.517Z" itemprop="datePublished">2019-05-29</time>
+	</a>
+
+      
+      
+	<a class="article-views">
+	<span id="busuanzi_container_page_pv">
+		PV:<span id="busuanzi_value_page_pv"></span>
+	</span>
+	</a>
+
+      
+
+    </div>
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="Android-Gesture-手势研究"><a href="#Android-Gesture-手势研究" class="headerlink" title="Android Gesture 手势研究"></a>Android Gesture 手势研究</h1><p>怎么理解一个手势,就是在屏幕上,手画一个符号就是一个手势,它代表了用户的一个意图,也就是用户希望程序做点什么,一般程序大多数是通过按钮,按钮上有对应的文字,这样进行人机交互,而手势也是很多地方会使用到,而常用的手势好像下拉刷新,用户希望列表内容下拉一下就有新的信息,双指缩放等等,一般这些手势都是跟对应的view绑定起来,而今天介绍的都是方法是可以不绑定view,直接在界面上画一个手势就可以人机交互.实现的代码可以在<a href="https://github.com/steven2947/gestureDemo" target="_blank" rel="noopener">github上的Demo源码</a>了解.</p>
+<p>这篇手势研究会大概分三部分</p>
+<ol>
+<li>手势Gesture使用方式</li>
+<li>展示手势开发的步骤及代码实现</li>
+<li>分析Gesture的源码及原理</li>
+</ol>
+<hr>
+<h2 id="使用的方式"><a href="#使用的方式" class="headerlink" title="使用的方式"></a>使用的方式</h2><p>首先我们需要把用户需要使用到的手势提前记录下来,准备一些手势的样本,在app安装时随着资源文件或者下载等方式存储到用户的手机里,当用户在app画一个手势时,就去匹配手势样本,当时样本最吻合时,就知道用户的意图,采取执行对应的功能,这样就是个很好的人机交互的方式.</p>
+<p>从上文使用方式,我们大概猜想到,我们需要一个东西,用来管理和读取我们已经存储的手势样本,我们还要需要这个东西可以设别用户的手势跟我们已经存储的手势进行匹配.还有,我们需一个东西在app的界面上记录用户的手势,没错,两个东西都存在,就是GestureLibrary和GestureOverlayView,这两个类就是手势开发里使用的主要两个类,通过这两个类,我们就可以实现手势开发的所有功能,是不是很简单.</p>
+<p>总结一下:</p>
+<ol>
+<li>提前准备好手势样本,在安装时加入到资源文件或者安装后网络下载.</li>
+<li>需要使用手势的界面里使用GestureOverlayView记录用户的手势,</li>
+<li>使用GestureLibrary对象对用户的手势进行监听和匹配,找到用户手势的意图,执行对应的功能</li>
+</ol>
+<hr>
+<h2 id="步骤及代码实现"><a href="#步骤及代码实现" class="headerlink" title="步骤及代码实现"></a>步骤及代码实现</h2><ol>
+<li><p>手势库的初始化<br> <code>GestureLibrary gLib=GestureLibraries.fromFile(手势库文件);
+gLib.load();</code><br>这个过程是读取已经存储手势样本文件,构造出GestureLibrary实例的过程,需要第一步实现.</p>
+</li>
+<li><p>对用户手势的监听<br><code>GestureOverlayView.addOnGesturePerformedListener()</code></p>
+</li>
+<li><p>使用GestureLibrary对用户的手势进行匹配<br><code>recognize(Gesture gesture)</code></p>
+</li>
+<li><p>循环遍历返回的ArrayList<prediction>对象，使用Prediction的score来匹配手势的相似度，<br> score越高代表越匹配.<br> <code>Prediction.score()</code></prediction></p>
+</li>
+</ol>
+<p>这里就是手势开发的实现的全部内容,但是作为一个程序猿,需要知其然知其所以然,就要对源码进行解剖.</p>
+<hr>
+<h2 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h2><h3 id="手势的结构"><a href="#手势的结构" class="headerlink" title="手势的结构"></a>手势的结构</h3><p>手势是用户在屏幕上画的符号,那么手势可以简单的一笔笔画,例如一个方向的箭头(&gt;),也可以多笔划,很复杂,例如一个文字.这些都手势,所以我们就知道</p>
+<blockquote>
+<p>手势是由一个或者多个笔画组成</p>
+</blockquote>
+<p>学过数学的我们都到线是由点组成的,所以</p>
+<blockquote>
+<p>一个手势笔画是由多个时间连续的点组成</p>
+</blockquote>
+<p>一个点意味着什么呢,它会固定在屏幕的某个地方,还需要时间连续不断,所以</p>
+<blockquote>
+<p>手势中的点包含坐标X轴和Y轴,还有时间戳</p>
+</blockquote>
+<p>所以我们就很容易了解手势对应的文件了</p>
+<p><strong>GesturePoint</strong> : 是手势笔划中的一个点,包含X轴,Y轴的坐标,还有时间戳.<br><strong>GestureStroke</strong> : 手势笔划,可以理解为线,由多个点组成的.<br><strong>Gesture</strong> : 手势,代表用户的一个手势,可以由一个或者多个手势笔划组成.<br><strong>GestureStore</strong> 手势仓库,里面存储了多个手势样本</p>
+<hr>
+<h3 id="手势的使用"><a href="#手势的使用" class="headerlink" title="手势的使用"></a>手势的使用</h3><p>使用手势的过程都是先从GestureLibrary开始,那么看看GestureLibrary的关系图.</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/26893-d73329f7da44c6ba.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="14937957345949.jpg"></p>
+<p>从图中看,GestureLibrary的实现有两种,一个File的实现,另外一个是由资源Resource实现,说明我们的手势库可有两个方向可以构造.</p>
+<p>然后看回GestureLibrary的源码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">public abstract class GestureLibrary &#123;</span><br><span class="line">     protected final GestureStore mStore;</span><br><span class="line">     ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>里面只有一个对象,而所有的方法都是由这个对象实现,也就是GestureLibrary其实是GestureStore的代理类,而真正的功能其实是在GestureStore里.</p>
+<p>GestureStore的内容很多,首先看到的是顶部注释里有手势文件的结构内容</p>
+<table>
+<thead>
+<tr>
+<th align="left"></th>
+<th align="left">Nb.bytes</th>
+<th align="left">Java type</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">Header</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">2 bytes</td>
+<td align="left">short</td>
+<td align="left">File format version</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">4 bytes</td>
+<td align="left">int</td>
+<td align="left">number Number of entries</td>
+</tr>
+<tr>
+<td align="left">Entry</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">X bytes</td>
+<td align="left">UTF String</td>
+<td align="left">Entry name</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">4 bytes</td>
+<td align="left">int</td>
+<td align="left">Number of gestures</td>
+</tr>
+<tr>
+<td align="left">Gesture</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">8 bytes</td>
+<td align="left">long</td>
+<td align="left">Gesture ID</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">4 bytes</td>
+<td align="left">int</td>
+<td align="left">Number of strokes</td>
+</tr>
+<tr>
+<td align="left">Stroke</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">4 bytes</td>
+<td align="left">int</td>
+<td align="left">Number of points</td>
+</tr>
+<tr>
+<td align="left">Point</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">4 bytes</td>
+<td align="left">float</td>
+<td align="left">X coordinate of the point</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">4 bytes</td>
+<td align="left">float</td>
+<td align="left">Ycoordinate of the point</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left">8 bytes</td>
+<td align="left">long</td>
+<td align="left">Time stamp</td>
+</tr>
+</tbody></table>
+<p>从源码可以知道,GestureStore的文件格式主要组成部分,也就是GestureLibrary读取文件的格式内容,也可以考虑根据这样的格式来进行加密,假如用手势来做成一个手写输入法的软件,那么手势库一定是庞大的内容库,而且根据所有人不同的手写方式,这样的手势库一定很有价值,至于怎样加密来保护这些价值,就可以考虑每个手势的内容进行拆分来分别存储和采取不同的加密方式加密.</p>
+<p>然后我们再看Store对手势的读取保存</p>
+<p>读取和保存</p>
+<p>读取第一步GestureLibraries中读取手势文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">public boolean load() &#123;</span><br><span class="line">    ...</span><br><span class="line">    mStore.load(new FileInputStream(file), true);</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>第二步store获取文件流</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">public void load(InputStream stream, boolean closeStream) throws IOException &#123;</span><br><span class="line">        DataInputStream in = null;</span><br><span class="line">        try &#123;</span><br><span class="line">            in = new DataInputStream((stream instanceof BufferedInputStream) ? stream :</span><br><span class="line">                    new BufferedInputStream(stream, GestureConstants.IO_BUFFER_SIZE));</span><br><span class="line">            ...</span><br><span class="line"></span><br><span class="line">            // Read file format version number</span><br><span class="line">            final short versionNumber = in.readShort();</span><br><span class="line">            switch (versionNumber) &#123;</span><br><span class="line">                case 1:</span><br><span class="line">                    readFormatV1(in);</span><br><span class="line">                    break;</span><br><span class="line">            &#125;</span><br><span class="line">           ...</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>第三步从文件流里读取文件名和手势对象(Gestire),然后存进HashMap里</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">    /**</span><br><span class="line">     * 读取文件数据</span><br><span class="line">     *</span><br><span class="line">     * @param in</span><br><span class="line">     * @throws IOException</span><br><span class="line">     */</span><br><span class="line">    private void readFormatV1(DataInputStream in) throws IOException &#123;</span><br><span class="line">        ...</span><br><span class="line">        for (int i = 0; i &lt; entriesCount; i++) &#123;</span><br><span class="line">            // Entry name</span><br><span class="line">            final String name = in.readUTF();</span><br><span class="line">            // Number of gestures</span><br><span class="line">            final int gestureCount = in.readInt();</span><br><span class="line"></span><br><span class="line">            final ArrayList&lt;Gesture&gt; gestures = new ArrayList&lt;Gesture&gt;(gestureCount);</span><br><span class="line">            for (int j = 0; j &lt; gestureCount; j++) &#123;</span><br><span class="line">                final Gesture gesture = Gesture.deserialize(in);</span><br><span class="line">                gestures.add(gesture);</span><br><span class="line">                classifier.addInstance(Instance.createInstance(mSequenceType, mOrientationStyle, gesture, name));</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            namedGestures.put(name, gestures);</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>读取的方式是从文件流里获取到手势数据,从Gesture的deserialize方法可以知道,每一步的解析都是按照文件存储格式一步步获取数据,当然,存储也是反向一步步保存成文件流格式存储的.</p>
+<hr>
+<h4 id="手势的匹配"><a href="#手势的匹配" class="headerlink" title="手势的匹配"></a>手势的匹配</h4><p>这里我们再好好探求手势的设别匹配,也是我认为手势源码之中最有研究价值的一块.当把代码解析一下就会发现其实很多功能的本质就是数学问题,而这里的手势匹配的本质就是数学的线性代数.</p>
+<p>首先从匹配的方法入手,GestureStore.recognize()方法开始看</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">public ArrayList&lt;Prediction&gt; recognize(Gesture gesture) &#123;</span><br><span class="line"></span><br><span class="line">        //实例</span><br><span class="line">        Instance instance = Instance.createInstance(mSequenceType, mOrientationStyle, gesture, null);</span><br><span class="line"></span><br><span class="line">        //归类</span><br><span class="line">        return mClassifier.classify(mSequenceType, mOrientationStyle, instance.vector);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>recognize()方法里有两个核心,一个是根据手势对象(Gesture)来构造一个实例,二是通过mClassifier对象的classify()方法来返回一个Prediction数组.</p>
+<p>首先从Instance来研究.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">static Instance createInstance(int sequenceType, int orientationType, Gesture gesture, String label) &#123;</span><br><span class="line">        float[] pts;</span><br><span class="line">        Instance instance;</span><br><span class="line">        if (sequenceType == GestureStore.SEQUENCE_SENSITIVE) &#123;//单笔手势</span><br><span class="line">            //得到一个连续点的数组</span><br><span class="line">            pts = temporalSampler(orientationType, gesture);</span><br><span class="line">            instance = new Instance(gesture.getID(), pts, label);</span><br><span class="line">            instance.normalize();</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            pts = spatialSampler(gesture);</span><br><span class="line">            instance = new Instance(gesture.getID(), pts, label);</span><br><span class="line">        &#125;</span><br><span class="line">        return instance;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>从Instance的构造方法看是需要三个参数,id,连续点数组,和标签label.所以temporalSampler()和spatialSampler()都是把手势gesture转换为一个数组.</p>
+<p>但是为什么需要把一个手势转换为一个数组呢,我们都知道一条线是由无数个点,假如点太多就带来很大量的计算工作,所以我们采用生物学的抽样法.每隔固定的间隔就取一个样本,这样就减少计算量,但是太少的话就会样本集合与真实的差别就很大,所以我们去了一个适合的量作为样本数量.</p>
+<p><code>private static final int SEQUENCE_SAMPLE_SIZE = 16;</code></p>
+<p>我们取了样本数量为16,把任何一个手势笔划转换为均匀分割的16个点来代替.</p>
+<p>转换的方法就是GestureUtils.temporalSampling()</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> * Samples a stroke temporally into a given number of evenly-distributed</span><br><span class="line"> * points.</span><br><span class="line"> * 代表均匀分布的点的一系列数字作为时间取样的笔划例子</span><br><span class="line"> * 把一个手势的笔划(连续点的线)转化为离散的点</span><br><span class="line"> *</span><br><span class="line"> * @param stroke    the gesture stroke to be sampled</span><br><span class="line"> * @param numPoints the number of points 取样点的数量(越多越精确,越多消耗性能越大)</span><br><span class="line"> * @return the sampled points in the form of [x1, y1, x2, y2, ..., xn, yn]</span><br><span class="line"> */</span><br><span class="line">public static float[] temporalSampling(GestureStroke stroke, int numPoints) &#123;</span><br><span class="line">    //递增量,手势笔画的长度除以需要切开的段数(离散点数 - 1)</span><br><span class="line">    final float increment = stroke.length / (numPoints - 1);</span><br><span class="line">    //向量长度</span><br><span class="line">    int vectorLength = numPoints * 2;</span><br><span class="line">    //向量</span><br><span class="line">    float[] vector = new float[vectorLength];//因为向量就是取样点的内容,包含x,y坐标,所以是取样点的两倍</span><br><span class="line">    float distanceSoFar = 0;</span><br><span class="line">    float[] pts = stroke.points;</span><br><span class="line">    //上次最新的坐标</span><br><span class="line">    float lstPointX = pts[0];</span><br><span class="line">    float lstPointY = pts[1];</span><br><span class="line">    int index = 0;</span><br><span class="line">    //当前坐标</span><br><span class="line">    float currentPointX = Float.MIN_VALUE;</span><br><span class="line">    float currentPointY = Float.MIN_VALUE;</span><br><span class="line">    vector[index] = lstPointX;</span><br><span class="line">    index++;</span><br><span class="line">    vector[index] = lstPointY;</span><br><span class="line">    index++;</span><br><span class="line">    int i = 0;</span><br><span class="line">    int count = pts.length / 2;</span><br><span class="line">    while (i &lt; count) &#123;</span><br><span class="line">        //默认值,也是第一个运行时执行的</span><br><span class="line">        if (currentPointX == Float.MIN_VALUE) &#123;</span><br><span class="line">            i++;</span><br><span class="line">            if (i &gt;= count) &#123;</span><br><span class="line">                break;</span><br><span class="line">            &#125;</span><br><span class="line">            currentPointX = pts[i * 2];</span><br><span class="line">            currentPointY = pts[i * 2 + 1];</span><br><span class="line">        &#125;</span><br><span class="line">        //坐标偏移量</span><br><span class="line">        float deltaX = currentPointX - lstPointX;//两个坐标点的X轴差值</span><br><span class="line">        float deltaY = currentPointY - lstPointY;//两个坐标点的Y轴差值</span><br><span class="line">        //deltaX 和 deltaY的平方和的平方根(根据三角函数,)也就是两个点的直线距离</span><br><span class="line">        float distance = (float) Math.hypot(deltaX, deltaY);//根据三角函数定理,X2 + Y2 = Z2</span><br><span class="line"></span><br><span class="line">        if (distanceSoFar + distance &gt;= increment) &#123;//当两个点(叠加上次循环的距离)的距离大于递增量(根据numPoints来确定的离散点的间隔距离)时执行</span><br><span class="line">            //比例</span><br><span class="line">            float ratio = (increment - distanceSoFar) / distance;</span><br><span class="line">            float nx = lstPointX + ratio * deltaX;</span><br><span class="line">            float ny = lstPointY + ratio * deltaY;</span><br><span class="line">            vector[index] = nx;</span><br><span class="line">            index++;</span><br><span class="line">            vector[index] = ny;</span><br><span class="line">            index++;</span><br><span class="line">            lstPointX = nx;</span><br><span class="line">            lstPointY = ny;</span><br><span class="line">            distanceSoFar = 0;</span><br><span class="line">        &#125; else &#123;//当两个点的距离少于间隔距离</span><br><span class="line">            //缓存当前的点</span><br><span class="line">            lstPointX = currentPointX;</span><br><span class="line">            lstPointY = currentPointY;</span><br><span class="line">            //当前点默认最小值</span><br><span class="line">            currentPointX = Float.MIN_VALUE;</span><br><span class="line">            currentPointY = Float.MIN_VALUE;</span><br><span class="line">            //叠加记录两点距离</span><br><span class="line">            distanceSoFar += distance;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    //添加剩下最后一个点的坐标</span><br><span class="line">    for (i = index; i &lt; vectorLength; i += 2) &#123;</span><br><span class="line">        vector[i] = lstPointX;</span><br><span class="line">        vector[i + 1] = lstPointY;</span><br><span class="line">    &#125;</span><br><span class="line">    return vector;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其中就使用到数学的三角函数公式,通过两个点的坐标(x,y)来计算两点距离.</p>
+<p>回到Instance的类</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">//时间取样</span><br><span class="line">private static float[] temporalSampler(int orientationType, Gesture gesture) &#123;</span><br><span class="line">    //离散点</span><br><span class="line">    float[] pts = GestureUtils.temporalSampling(gesture.getStrokes().get(0), SEQUENCE_SAMPLE_SIZE);</span><br><span class="line">    //重心点</span><br><span class="line">    float[] center = GestureUtils.computeCentroid(pts);</span><br><span class="line">    //计算弧度值(计算第一个点与重心点形成的角度的弧度值)</span><br><span class="line">    float orientation = (float) Math.atan2(pts[1] - center[1], pts[0] - center[0]);</span><br><span class="line"></span><br><span class="line">    //???</span><br><span class="line">    float adjustment = -orientation;</span><br><span class="line">    if (orientationType != GestureStore.ORIENTATION_INVARIANT) &#123;</span><br><span class="line">        int count = ORIENTATIONS.length;</span><br><span class="line">        for (int i = 0; i &lt; count; i++) &#123;</span><br><span class="line">            float delta = ORIENTATIONS[i] - orientation;</span><br><span class="line">            if (Math.abs(delta) &lt; Math.abs(adjustment)) &#123;</span><br><span class="line">                adjustment = delta;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    //根据中心点平移,平移到中心点在原点上</span><br><span class="line">    GestureUtils.translate(pts, -center[0], -center[1]);</span><br><span class="line">    //根据调整出来的adjustment旋转数据</span><br><span class="line">    GestureUtils.rotate(pts, adjustment);</span><br><span class="line"></span><br><span class="line">    return pts;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>除计算adjustment的方法还没理解透,欢迎读者可以继续跟我交流</p>
+<p>这个方法主要计算出手势的间隔点数组,然后平移到坐标原点上和调整角度,输出调整后的数组.就大概完成这个功能内容.接着我们继续看下个功能点classify.</p>
+<p>mClassifier这个对象的类似Learner,就是用于实现匹配功能的类,而classify的实现类在InstanceLearner这个类里,那么到底一个这么重要的方法classify到底做了什么呢?</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> * 归类</span><br><span class="line"> *</span><br><span class="line"> * @param sequenceType</span><br><span class="line"> * @param orientationType</span><br><span class="line"> * @param vector</span><br><span class="line"> * @return</span><br><span class="line"> */</span><br><span class="line">@Override</span><br><span class="line">ArrayList&lt;Prediction&gt; classify(int sequenceType, int orientationType, float[] vector) &#123;</span><br><span class="line"></span><br><span class="line">    //预测对象数组</span><br><span class="line">    ArrayList&lt;Prediction&gt; predictions = new ArrayList&lt;Prediction&gt;();</span><br><span class="line">    //实例数组</span><br><span class="line">    ArrayList&lt;Instance&gt; instances = getInstances();</span><br><span class="line"></span><br><span class="line">    int count = instances.size();</span><br><span class="line"></span><br><span class="line">    //便签找到得分值的map</span><br><span class="line">    TreeMap&lt;String, Double&gt; label2score = new TreeMap&lt;String, Double&gt;();</span><br><span class="line"></span><br><span class="line">    for (int i = 0; i &lt; count; i++) &#123;</span><br><span class="line">        Instance sample = instances.get(i);</span><br><span class="line"></span><br><span class="line">        //保证数据长度一致</span><br><span class="line">        if (sample.vector.length != vector.length) &#123;</span><br><span class="line">            continue;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        //距离(与手势的差距)</span><br><span class="line">        double distance;</span><br><span class="line">        if (sequenceType == GestureStore.SEQUENCE_SENSITIVE) &#123;</span><br><span class="line">            distance = GestureUtils.minimumCosineDistance(sample.vector, vector, orientationType);</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            distance = GestureUtils.squaredEuclideanDistance(sample.vector, vector);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        //权重(权重越大,代表越匹配)</span><br><span class="line">        double weight;</span><br><span class="line">        if (distance == 0) &#123;</span><br><span class="line">            //代表完全吻合</span><br><span class="line">            weight = Double.MAX_VALUE;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            //取distance的倒数</span><br><span class="line">            weight = 1 / distance;</span><br><span class="line">        &#125;</span><br><span class="line">        Double score = label2score.get(sample.label);</span><br><span class="line">        if (score == null || weight &gt; score) &#123;</span><br><span class="line">            label2score.put(sample.label, weight);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    for (String name : label2score.keySet()) &#123;</span><br><span class="line">        double score = label2score.get(name);</span><br><span class="line">        predictions.add(new Prediction(name, score));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    //排序</span><br><span class="line">    Collections.sort(predictions, sComparator);</span><br><span class="line"></span><br><span class="line">    return predictions;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个类主要做的事情就是对用户的手势和所有的已存的手势进行匹配,计算出相识度的权重,然后我们就可以根据这个权重来知道用户的手势大概是什么意思.所以这个方法最重要的内容是计算权重的方法,GestureUtils的minimumCosineDistance()和squaredEuclideanDistance()</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line">  * Calculates the &quot;minimum&quot; cosine distance between two instances.</span><br><span class="line">  * &lt;p&gt;</span><br><span class="line">  * 最小的余弦距离</span><br><span class="line">  *</span><br><span class="line">  * @param vector1</span><br><span class="line">  * @param vector2</span><br><span class="line">  * @param numOrientations the maximum number of orientation allowed</span><br><span class="line">  * @return the distance between the two instances (between 0 and Math.PI)</span><br><span class="line">  */</span><br><span class="line"> static float minimumCosineDistance(float[] vector1, float[] vector2, int numOrientations) &#123;</span><br><span class="line">     final int len = vector1.length;</span><br><span class="line">     //???</span><br><span class="line">     float a = 0;</span><br><span class="line">     float b = 0;</span><br><span class="line">     for (int i = 0; i &lt; len; i += 2) &#123;</span><br><span class="line">         a += vector1[i] * vector2[i] + vector1[i + 1] * vector2[i + 1];//(x1 * x2 + y1 * y2)叠加所有坐标</span><br><span class="line">         b += vector1[i] * vector2[i + 1] - vector1[i + 1] * vector2[i];//(x1 * y2 + y1 * x2)叠加所有坐标</span><br><span class="line">     &#125;</span><br><span class="line">     if (a != 0) &#123;</span><br><span class="line">         final float tan = b / a;</span><br><span class="line">         //角度</span><br><span class="line">         final double angle = Math.atan(tan);</span><br><span class="line">         if (numOrientations &gt; 2 &amp;&amp; Math.abs(angle) &gt;= Math.PI / numOrientations) &#123;</span><br><span class="line">             return (float) Math.acos(a);</span><br><span class="line">         &#125; else &#123;</span><br><span class="line">             final double cosine = Math.cos(angle);</span><br><span class="line">             final double sine = cosine * tan;</span><br><span class="line">             return (float) Math.acos(a * cosine + b * sine);</span><br><span class="line">         &#125;</span><br><span class="line">     &#125; else &#123;</span><br><span class="line">         return (float) Math.PI / 2;</span><br><span class="line">     &#125;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+
+<p>minimumCosineDistance()方法从注释来说就是实现最小的余弦距离,把用户手势点和一个样本的手势点进行叠加计算,</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line">    * Calculates the squared Euclidean distance between two vectors.</span><br><span class="line">    *</span><br><span class="line">    * @param vector1</span><br><span class="line">    * @param vector2</span><br><span class="line">    * @return the distance</span><br><span class="line">    */</span><br><span class="line">   static float squaredEuclideanDistance(float[] vector1, float[] vector2) &#123;</span><br><span class="line">       float squaredDistance = 0;</span><br><span class="line">       int size = vector1.length;</span><br><span class="line">       for (int i = 0; i &lt; size; i++) &#123;</span><br><span class="line">           //坐标点的x轴或y轴差距</span><br><span class="line">           float difference = vector1[i] - vector2[i];</span><br><span class="line">           squaredDistance += difference * difference;</span><br><span class="line">       &#125;</span><br><span class="line">       return squaredDistance / size;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<p>squaredEuclideanDistance 的方法就是计算两点差距,然后平方和再除以数量.</p>
+<p>minimumCosineDistance()和squaredEuclideanDistance()的实现是知道,但是为什么要这样计算,和使用哪些数学原理还需继续深究,欢迎读者跟我进行探究.</p>
+<p>到这里Gesture的初步研究就差不多了,假如读者需要安卓源码的部分翻译,可以点击<a href="https://github.com/steven2947/AndroidSDKSource" target="_blank" rel="noopener">这里</a>获取.<br>假如读者需要阅读GestureDemo可以点击<a href="https://github.com/steven2947/gestureDemo" target="_blank" rel="noopener">这里</a>,假如读者需要跟我交流<a href="https://github.com/steven2947" target="_blank" rel="noopener">github</a>有邮箱联系方法</p>
+<h2 id="作者信息"><a href="#作者信息" class="headerlink" title="作者信息"></a>作者信息</h2><p>作者:<a href="https://github.com/steven2947" target="_blank" rel="noopener">StevenHe</a><br>博客:<a href="https://www.jianshu.com/u/cce7064ee2f6" target="_blank" rel="noopener">简书 - 可乐</a><br>工作邮箱:<a href="mailto:steven2947@163.com" target="_blank" rel="noopener">steven2947@163.com</a></p>
+<p>请尊重原创作者,复制引用时保留作者信息</p>
+<h2 id="Promotion"><a href="#Promotion" class="headerlink" title="Promotion"></a>Promotion</h2><ul>
+<li><a href="https://portal.qiniu.com/signup?code=3lh1x8qxlk5le" target="_blank" rel="noopener">七牛云推广链</a></li>
+<li><a href="https://github.com/getlantern/lantern" target="_blank" rel="noopener">蓝灯VPN</a> - 邀请码：YJ3TKYJ</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <div id="donation_div"></div>
+
+<script src="/js/vdonate.js"></script>
+<script>
+var a = new Donate({
+  title: '如果觉得我的文章对您有用，请随意打赏。您的支持将鼓励我继续创作!', // 可选参数，打赏标题
+  btnText: 'Donate', // 可选参数，打赏按钮文字
+  el: document.getElementById('donation_div'),
+  wechatImage: 'css/images/weixin_code.jpg',
+  alipayImage: 'css/images/zhifubao_code.jpg'
+});
+</script>
+      
+      
+      <div>
+        <ul class="post-copyright">
+          <li class="post-copyright-author">
+          <strong>Post author:  </strong>可乐
+          </li>
+          <li class="post-copyright-link">
+          <strong>Post link:  </strong>
+          <a href="/2019/05/29/Android Gesture 手势研究/" target="_blank" title>https://steven2947.github.io/2019/05/29/Android Gesture 手势研究/</a>
+          </li>
+          <li class="post-copyright-license">
+            <strong>Copyright Notice:   </strong>
+            All articles in this blog are licensed under <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">CC BY-NC-ND 4.0</a>
+            unless stating additionally.
+          </li>
+         
+        </ul>
+<div>
+</div></div>
+      
+      
+        
+	<div id="comment">
+		<!-- 来必力City版安装代码 -->
+		<div id="lv-container" data-id="city" data-uid="MTAyMC8yOTQ4MS82MDQ5">
+		<script type="text/javascript">
+		   (function(d, s) {
+		       var j, e = d.getElementsByTagName(s)[0];
+
+		       if (typeof LivereTower === 'function') { return; }
+
+		       j = d.createElement(s);
+		       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+		       j.async = true;
+
+		       e.parentNode.insertBefore(j, e);
+		   })(document, 'script');
+		</script>
+		<noscript>为正常使用来必力评论功能请激活JavaScript</noscript>
+		</div>
+		<!-- City版安装代码已完成 -->
+	</div>
+
+
+
+      
+      
+        
+      
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/05/29/RetrofitCache 源码分析/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          (no title)
+        
+      </div>
+    </a>
+  
+  
+</nav>
+
+  
+</article>
+
+<!-- Table of Contents -->
+
+  <aside id="toc-sidebar">
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">Contents</strong>
+    
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Android-Gesture-手势研究"><span class="nav-number">1.</span> <span class="nav-text">Android Gesture 手势研究</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#使用的方式"><span class="nav-number">1.1.</span> <span class="nav-text">使用的方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#步骤及代码实现"><span class="nav-number">1.2.</span> <span class="nav-text">步骤及代码实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#原理"><span class="nav-number">1.3.</span> <span class="nav-text">原理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#手势的结构"><span class="nav-number">1.3.1.</span> <span class="nav-text">手势的结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#手势的使用"><span class="nav-number">1.3.2.</span> <span class="nav-text">手势的使用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#手势的匹配"><span class="nav-number">1.3.2.1.</span> <span class="nav-text">手势的匹配</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#作者信息"><span class="nav-number">1.4.</span> <span class="nav-text">作者信息</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Promotion"><span class="nav-number">1.5.</span> <span class="nav-text">Promotion</span></a></li></ol></li></ol>
+    
+    </div>
+  </aside>
+
+</section>
+        
+      </div>
+      
+      <footer id="footer">
+  
+
+  <div class="container">
+      	<div class="row">
+	      <p> Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/iTimeTraveler/hexo-theme-hiker" target="_blank">Hexo-theme-hiker</a> </p>
+	      <p id="copyRightEn">Copyright &copy; 2013 - 2019 可乐的小屋 All Rights Reserved.</p>
+	      
+	      
+    		<p class="busuanzi_uv">
+				UV : <span id="busuanzi_value_site_uv"></span> |  
+				PV : <span id="busuanzi_value_site_pv"></span>
+		    </p>
+  		   
+		</div>
+
+		
+  </div>
+</footer>
+
+
+<!-- min height -->
+
+<script>
+    var wrapdiv = document.getElementById("wrap");
+    var contentdiv = document.getElementById("content");
+    var allheader = document.getElementById("allheader");
+
+    wrapdiv.style.minHeight = document.body.offsetHeight + "px";
+    if (allheader != null) {
+      contentdiv.style.minHeight = document.body.offsetHeight - allheader.offsetHeight - document.getElementById("footer").offsetHeight + "px";
+    } else {
+      contentdiv.style.minHeight = document.body.offsetHeight - document.getElementById("footer").offsetHeight + "px";
+    }
+</script>
+    </div>
+    <!-- <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="/categories" class="mobile-nav-link">Categories</a>
+  
+    <a href="/tags" class="mobile-nav-link">Tags</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav> -->
+    
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/scripts.js"></script>
+
+
+
+
+  <script src="/js/dialog.js"></script>
+
+
+
+
+
+
+
+
+	<div style="display: none;">
+    <script src="https://s95.cnzz.com/z_stat.php?id=1260716016&web_id=1260716016" language="JavaScript"></script>
+  </div>
+
+
+
+	<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+	</script>
+
+
+
+
+
+
+  </div>
+
+  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" id="myModalLabel">设置</h2>
+      </div>
+      <hr style="margin-top:0px; margin-bottom:0px; width:80%; border-top: 3px solid #000;">
+      <hr style="margin-top:2px; margin-bottom:0px; width:80%; border-top: 1px solid #000;">
+
+
+      <div class="modal-body">
+          <div style="margin:6px;">
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" onclick="javascript:setFontSize();" aria-expanded="true" aria-controls="collapseOne">
+              正文字号大小
+            </a>
+          </div>
+          <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+          <div class="panel-body">
+            您已调整页面字体大小
+          </div>
+        </div>
+      
+
+
+          <div style="margin:6px;">
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" onclick="javascript:setBackground();" aria-expanded="true" aria-controls="collapseTwo">
+              夜间护眼模式
+            </a>
+        </div>
+          <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+          <div class="panel-body">
+            夜间模式已经开启，再次单击按钮即可关闭 
+          </div>
+        </div>
+
+        <div>
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="true" aria-controls="collapseThree">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;关 于&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+        </div>
+         <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+          <div class="panel-body">
+            可乐的小屋
+          </div>
+          <div class="panel-body">
+            Copyright © 2019 可乐 All Rights Reserved.
+          </div>
+        </div>
+      </div>
+
+
+      <hr style="margin-top:0px; margin-bottom:0px; width:80%; border-top: 1px solid #000;">
+      <hr style="margin-top:2px; margin-bottom:0px; width:80%; border-top: 3px solid #000;">
+      <div class="modal-footer">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+      </div>
+    </div>
+  </div>
+</div>
+  
+  <a id="rocket" href="#top" class=""></a>
+  <script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+  
+    <a id="menu-switch"><i class="fa fa-bars fa-lg"></i></a>
+  
+</body>
+</html>
