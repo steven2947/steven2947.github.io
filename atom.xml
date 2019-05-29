@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>可乐的小屋</title>
+  
+  <subtitle>码字</subtitle>
+  <link href="/atom.xml" rel="self"/>
+  
+  <link href="https://steven2947.github.io/"/>
+  <updated>2019-05-29T06:03:36.811Z</updated>
+  <id>https://steven2947.github.io/</id>
+  
+  <author>
+    <name>可乐</name>
+    
+  </author>
+  
+  <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Android install apk 兼容至 Android 8</title>
+    <link href="https://steven2947.github.io/2018/06/07/Android%20install%20apk%20%E5%85%BC%E5%AE%B9%E8%87%B3%20Android%208/"/>
+    <id>https://steven2947.github.io/2018/06/07/Android install apk 兼容至 Android 8/</id>
+    <published>2018-06-07T03:55:33.000Z</published>
+    <updated>2019-05-29T06:03:36.811Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;以往安装apk都是很简单的方法, Intent 里添加apk的文件就可以调用系统安装界面.后来随着谷歌对安全的重视,从Android
+        
+      
+    
+    </summary>
+    
+      <category term="移动开发" scheme="https://steven2947.github.io/categories/%E7%A7%BB%E5%8A%A8%E5%BC%80%E5%8F%91/"/>
+    
+    
+      <category term="Android" scheme="https://steven2947.github.io/tags/Android/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>RetrofitCache 源码分析</title>
+    <link href="https://steven2947.github.io/2018/05/22/RetrofitCache%20%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/"/>
+    <id>https://steven2947.github.io/2018/05/22/RetrofitCache 源码分析/</id>
+    <published>2018-05-22T07:43:33.000Z</published>
+    <updated>2019-05-29T06:03:36.806Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;p&gt;最近工作项目里添加网络缓存时看了这个项目,内容不多,有些方法可取便记录下来&lt;/p&gt;
+&lt;h2 id=&quot;原理&quot;&gt;&lt;a href=&quot;#原理&quot; class=&quot;headerlink&quot; title=&quot;原理&quot;&gt;&lt;/a&gt;原理&lt;/h2&gt;&lt;p&gt;&lt;a
+        
+      
+    
+    </summary>
+    
+      <category term="移动开发" scheme="https://steven2947.github.io/categories/%E7%A7%BB%E5%8A%A8%E5%BC%80%E5%8F%91/"/>
+    
+    
+      <category term="源码解读" scheme="https://steven2947.github.io/tags/%E6%BA%90%E7%A0%81%E8%A7%A3%E8%AF%BB/"/>
+    
+      <category term="Android" scheme="https://steven2947.github.io/tags/Android/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Android Gesture 手势研究</title>
+    <link href="https://steven2947.github.io/2017/05/05/Android%20Gesture%20%E6%89%8B%E5%8A%BF%E7%A0%94%E7%A9%B6/"/>
+    <id>https://steven2947.github.io/2017/05/05/Android Gesture 手势研究/</id>
+    <published>2017-05-05T05:15:33.000Z</published>
+    <updated>2019-05-29T06:03:36.801Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;p&gt;怎么理解一个手势,就是在屏幕上,手画一个符号就是一个手势,它代表了用户的一个意图,也就是用户希望程序做点什么,一般程序大多数是通过按钮,按钮上有对应的文字,这样进行人机交互,而手势也是很多地方会使用到,而常用的手势好像下拉刷新,用户希望列表内容下拉一下就有新的信息,双指缩放
+        
+      
+    
+    </summary>
+    
+      <category term="移动开发" scheme="https://steven2947.github.io/categories/%E7%A7%BB%E5%8A%A8%E5%BC%80%E5%8F%91/"/>
+    
+    
+      <category term="源码解读" scheme="https://steven2947.github.io/tags/%E6%BA%90%E7%A0%81%E8%A7%A3%E8%AF%BB/"/>
+    
+      <category term="Android" scheme="https://steven2947.github.io/tags/Android/"/>
+    
+  </entry>
+  
+</feed>
