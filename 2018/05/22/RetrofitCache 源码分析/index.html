@@ -3,24 +3,27 @@
 <head><meta name="generator" content="Hexo 3.8.0">
   <meta charset="utf-8">
   
-  <title>可乐的小屋</title>
+  <title>retrofitcache 源码分析 | 可乐的小屋</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   
+  <meta name="keywords" content="源码解读Android">
   
   
   
-  <meta name="description" content="RetrofitCache 源码分析最近工作项目里添加网络缓存时看了这个项目,内容不多,有些方法可取便记录下来 原理RetrofitCache 使用的方式是okhttp原有的cache机制,然后它提供了标签的方式,在Retrofit上简单实现,减少代码入侵,这是这个库的价值. 添加拦截器12345okhttp3.OkHttpClient.Builder clientBuilder=new okht">
+  
+  <meta name="description" content="最近工作项目里添加网络缓存时看了这个项目,内容不多,有些方法可取便记录下来 原理RetrofitCache 使用的方式是okhttp原有的cache机制,然后它提供了标签的方式,在Retrofit上简单实现,减少代码入侵,这是这个库的价值. 添加拦截器12345okhttp3.OkHttpClient.Builder clientBuilder=new okhttp3.OkHttpClient.B">
+<meta name="keywords" content="源码解读,Android">
 <meta property="og:type" content="article">
-<meta property="og:title" content="可乐的小屋">
-<meta property="og:url" content="https://steven2947.github.io/2019/05/29/RetrofitCache 源码分析/index.html">
+<meta property="og:title" content="RetrofitCache 源码分析">
+<meta property="og:url" content="https://steven2947.github.io/2018/05/22/RetrofitCache 源码分析/index.html">
 <meta property="og:site_name" content="可乐的小屋">
-<meta property="og:description" content="RetrofitCache 源码分析最近工作项目里添加网络缓存时看了这个项目,内容不多,有些方法可取便记录下来 原理RetrofitCache 使用的方式是okhttp原有的cache机制,然后它提供了标签的方式,在Retrofit上简单实现,减少代码入侵,这是这个库的价值. 添加拦截器12345okhttp3.OkHttpClient.Builder clientBuilder=new okht">
+<meta property="og:description" content="最近工作项目里添加网络缓存时看了这个项目,内容不多,有些方法可取便记录下来 原理RetrofitCache 使用的方式是okhttp原有的cache机制,然后它提供了标签的方式,在Retrofit上简单实现,减少代码入侵,这是这个库的价值. 添加拦截器12345okhttp3.OkHttpClient.Builder clientBuilder=new okhttp3.OkHttpClient.B">
 <meta property="og:locale" content="default">
 <meta property="og:image" content="https://upload-images.jianshu.io/upload_images/26893-40452c6192f5c0fa.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:updated_time" content="2019-05-29T04:17:12.575Z">
+<meta property="og:updated_time" content="2019-05-29T06:03:36.806Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="可乐的小屋">
-<meta name="twitter:description" content="RetrofitCache 源码分析最近工作项目里添加网络缓存时看了这个项目,内容不多,有些方法可取便记录下来 原理RetrofitCache 使用的方式是okhttp原有的cache机制,然后它提供了标签的方式,在Retrofit上简单实现,减少代码入侵,这是这个库的价值. 添加拦截器12345okhttp3.OkHttpClient.Builder clientBuilder=new okht">
+<meta name="twitter:title" content="RetrofitCache 源码分析">
+<meta name="twitter:description" content="最近工作项目里添加网络缓存时看了这个项目,内容不多,有些方法可取便记录下来 原理RetrofitCache 使用的方式是okhttp原有的cache机制,然后它提供了标签的方式,在Retrofit上简单实现,减少代码入侵,这是这个库的价值. 添加拦截器12345okhttp3.OkHttpClient.Builder clientBuilder=new okhttp3.OkHttpClient.B">
 <meta name="twitter:image" content="https://upload-images.jianshu.io/upload_images/26893-40452c6192f5c0fa.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
   
     <link rel="alternate" href="/atom.xml" title="可乐的小屋" type="application/atom+xml">
@@ -166,13 +169,25 @@
   <div id="articleInner" class="article-inner">
     
     
+      <header class="article-header">
+        
+  
+    <h1 class="thumb" itemprop="name">
+      RetrofitCache 源码分析
+    </h1>
+  
+
+      </header>
+    
     <div class="article-meta">
       
-	<a href="/2019/05/29/RetrofitCache 源码分析/" class="article-date">
-	  <time datetime="2019-05-29T04:16:47.269Z" itemprop="datePublished">2019-05-29</time>
+	<a href="/2018/05/22/RetrofitCache 源码分析/" class="article-date">
+	  <time datetime="2018-05-22T07:43:33.000Z" itemprop="datePublished">2018-05-22</time>
 	</a>
 
       
+    <a class="article-category-link" href="/categories/移动开发/">移动开发</a>
+
       
 	<a class="article-views">
 	<span id="busuanzi_container_page_pv">
@@ -185,7 +200,7 @@
     </div>
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="RetrofitCache-源码分析"><a href="#RetrofitCache-源码分析" class="headerlink" title="RetrofitCache 源码分析"></a>RetrofitCache 源码分析</h1><p>最近工作项目里添加网络缓存时看了这个项目,内容不多,有些方法可取便记录下来</p>
+        <p>最近工作项目里添加网络缓存时看了这个项目,内容不多,有些方法可取便记录下来</p>
 <h2 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h2><p><a href="https://github.com/yale8848/RetrofitCache" target="_blank" rel="noopener">RetrofitCache</a> 使用的方式是okhttp原有的cache机制,然后它提供了标签的方式,在Retrofit上简单实现,减少代码入侵,这是这个库的价值.</p>
 <h3 id="添加拦截器"><a href="#添加拦截器" class="headerlink" title="添加拦截器"></a>添加拦截器</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">okhttp3.OkHttpClient.Builder clientBuilder=new okhttp3.OkHttpClient.Builder();</span><br><span class="line">...</span><br><span class="line">clientBuilder.addInterceptor(new CacheForceInterceptorNoNet());</span><br><span class="line">clientBuilder.addNetworkInterceptor(new CacheInterceptorOnNet());</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
 
@@ -233,7 +248,7 @@ var a = new Donate({
           </li>
           <li class="post-copyright-link">
           <strong>Post link:  </strong>
-          <a href="/2019/05/29/RetrofitCache 源码分析/" target="_blank" title>https://steven2947.github.io/2019/05/29/RetrofitCache 源码分析/</a>
+          <a href="/2018/05/22/RetrofitCache 源码分析/" target="_blank" title="RetrofitCache 源码分析">https://steven2947.github.io/2018/05/22/RetrofitCache 源码分析/</a>
           </li>
           <li class="post-copyright-license">
             <strong>Copyright Notice:   </strong>
@@ -273,6 +288,8 @@ var a = new Donate({
       
       
         
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android/">Android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/源码解读/">源码解读</a></li></ul>
+
       
 
     </footer>
@@ -281,19 +298,19 @@ var a = new Donate({
     
 <nav id="article-nav">
   
-    <a href="/2019/05/29/Android install apk 兼容至 Android 8/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2018/06/07/Android install apk 兼容至 Android 8/" id="article-nav-newer" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Newer</strong>
       <div class="article-nav-title">
         
-          (no title)
+          Android install apk 兼容至 Android 8
         
       </div>
     </a>
   
   
-    <a href="/2019/05/29/Android Gesture 手势研究/" id="article-nav-older" class="article-nav-link-wrap">
+    <a href="/2017/05/05/Android Gesture 手势研究/" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title"></div>
+      <div class="article-nav-title">Android Gesture 手势研究</div>
     </a>
   
 </nav>
@@ -307,7 +324,7 @@ var a = new Donate({
     <div id="toc" class="toc-article">
     <strong class="toc-title">Contents</strong>
     
-        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#RetrofitCache-源码分析"><span class="nav-number">1.</span> <span class="nav-text">RetrofitCache 源码分析</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#原理"><span class="nav-number">1.1.</span> <span class="nav-text">原理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#添加拦截器"><span class="nav-number">1.1.1.</span> <span class="nav-text">添加拦截器</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#CacheInterceptorOnNet"><span class="nav-number">1.1.1.1.</span> <span class="nav-text">CacheInterceptorOnNet</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#CacheForceInterceptorNoNet"><span class="nav-number">1.1.1.2.</span> <span class="nav-text">CacheForceInterceptorNoNet</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#BaseInterceptor"><span class="nav-number">1.1.1.3.</span> <span class="nav-text">BaseInterceptor</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">1.1.2.</span> <span class="nav-text">总结</span></a></li></ol></li></ol></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#原理"><span class="nav-number">1.</span> <span class="nav-text">原理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#添加拦截器"><span class="nav-number">1.1.</span> <span class="nav-text">添加拦截器</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#CacheInterceptorOnNet"><span class="nav-number">1.1.1.</span> <span class="nav-text">CacheInterceptorOnNet</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#CacheForceInterceptorNoNet"><span class="nav-number">1.1.2.</span> <span class="nav-text">CacheForceInterceptorNoNet</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#BaseInterceptor"><span class="nav-number">1.1.3.</span> <span class="nav-text">BaseInterceptor</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">1.2.</span> <span class="nav-text">总结</span></a></li></ol></li></ol>
     
     </div>
   </aside>
