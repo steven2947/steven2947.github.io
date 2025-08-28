@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>源码解读 on Steven&#39;s Blog</title>
     <link>http://localhost:1313/tags/%E6%BA%90%E7%A0%81%E8%A7%A3%E8%AF%BB/</link>
     <description>Recent content in 源码解读 on Steven&#39;s Blog</description>
-    <generator>Hugo</generator>
+    <generator>Hugo -- 0.149.0</generator>
     <language>zh-CN</language>
     <lastBuildDate>Tue, 22 May 2018 15:43:33 +0000</lastBuildDate>
     <atom:link href="http://localhost:1313/tags/%E6%BA%90%E7%A0%81%E8%A7%A3%E8%AF%BB/index.xml" rel="self" type="application/rss+xml" />
@@ -13,14 +13,131 @@
       <link>http://localhost:1313/posts/retrofitcache-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</link>
       <pubDate>Tue, 22 May 2018 15:43:33 +0000</pubDate>
       <guid>http://localhost:1313/posts/retrofitcache-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</guid>
-      <description>&lt;p&gt;最近工作项目里添加网络缓存时看了这个项目,内容不多,有些方法可取便记录下来&lt;/p&gt;&#xA;&lt;h2 id=&#34;原理&#34;&gt;原理&lt;/h2&gt;&#xA;&lt;p&gt;&lt;a href=&#34;https://github.com/yale8848/RetrofitCache&#34;&gt;RetrofitCache&lt;/a&gt; 使用的方式是okhttp原有的cache机制,然后它提供了标签的方式,在Retrofit上简单实现,减少代码入侵,这是这个库的价值.&lt;/p&gt;&#xA;&lt;h3 id=&#34;添加拦截器&#34;&gt;添加拦截器&lt;/h3&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;okhttp3.OkHttpClient.Builder clientBuilder=new okhttp3.OkHttpClient.Builder();&#xA;...&#xA;clientBuilder.addInterceptor(new CacheForceInterceptorNoNet());&#xA;clientBuilder.addNetworkInterceptor(new CacheInterceptorOnNet());&#xA;...&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;首先复习okhttp 的 addInterceptor 和 addNetworkInterceptor 的区别&lt;/p&gt;&#xA;&lt;p&gt;&lt;img src=&#34;https://upload-images.jianshu.io/upload_images/26893-40452c6192f5c0fa.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&#34; alt=&#34;image.png&#34;&gt;&lt;/p&gt;&#xA;&lt;p&gt;addInterceptor是添加在与服务器连接之前和之后&#xA;addNetworkInterceptor是添加在与服务器建立连接和发起请求的之间&lt;/p&gt;&#xA;&lt;p&gt;具体参考 &lt;a href=&#34;http://www.idtkm.com/2017/10/26/Retrofit2%20&amp;amp;%20OkHttp3%20Interceptor/&#34;&gt;Retrofit2 + OkHttp3 配置及Interceptor原理&lt;/a&gt;&lt;/p&gt;&#xA;&lt;h4 id=&#34;cacheinterceptoronnet&#34;&gt;CacheInterceptorOnNet&lt;/h4&gt;&#xA;&lt;p&gt;CacheInterceptorOnNet是添加在与服务器建立连接和发起请求的之间&lt;/p&gt;&#xA;&lt;p&gt;获取 maxAge 缓存时间&lt;/p&gt;&#xA;&lt;p&gt;当需要缓存时&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt; return   response.newBuilder()&#xA;                .removeHeader(&amp;#34;Cache-Control&amp;#34;)&#xA;                .header(&amp;#34;Cache-Control&amp;#34;, &amp;#34;public,max-age=&amp;#34;+maxAge)&#xA;                .removeHeader(&amp;#34;Pragma&amp;#34;)&#xA;                .build();&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;通过header里面添加 public,max-age=maxAge来缓存,而缓存的实现由 okhttp 里面实现&lt;/p&gt;&#xA;&lt;h4 id=&#34;cacheforceinterceptornonet&#34;&gt;CacheForceInterceptorNoNet&lt;/h4&gt;&#xA;&lt;p&gt;CacheForceInterceptorNoNet类是处理服务器连接之前和之后&#xA;功能同理,唯一不同的是在请求之前增加了是否网络连接状态的判断&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt; boolean forceCacheNoNet =  RetrofitCache.getInstance().getCacheTime(url).isForceCacheNoNet();&#xA;        if (forceCacheNoNet&amp;amp;&amp;amp;!NetUtils.isConnectNet(RetrofitCache.getInstance().getContext())){&#xA;            request = request.newBuilder()&#xA;                    .cacheControl(CacheControl.FORCE_CACHE)&#xA;                    .build();&#xA;        }&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;当没有网络的情况下,通过调用okhttp的Cache-Control来改变状态&#xA;具体参考 &lt;a href=&#34;http://www.cnblogs.com/whoislcj/p/5537640.html&#34;&gt;Android Okhttp网络请求之缓存控制Cache-Control&lt;/a&gt;&lt;/p&gt;&#xA;&lt;h4 id=&#34;baseinterceptor&#34;&gt;BaseInterceptor&lt;/h4&gt;&#xA;&lt;p&gt;在bese类里,一个核心的方法是mockResponse,获取在Api里通过标签添加的模拟数据和Asset获取的模拟数据.&lt;/p&gt;&#xA;&lt;p&gt;而Mock类就是模拟数据的抽象类,而通过RetrofitCache.getInstance().getMockObject(url)获取&#xA;使用Java Annotation注解的方式添加&lt;/p&gt;&#xA;&lt;p&gt;具体参考 &lt;a href=&#34;https://www.cnblogs.com/skywang12345/p/3344137.html&#34;&gt;Java Annotation认知(包括框架图、详细介绍、示例说明)&lt;/a&gt;&lt;/p&gt;&#xA;&lt;h3 id=&#34;总结&#34;&gt;总结&lt;/h3&gt;&#xA;&lt;p&gt;这个第三库的本质是使用的okhttp的缓存机制,使用Java Annotation的方法灵活在API里添加注解,以往项目的注解的使用并不多,可以多用这方式提高代码的简洁性,而okhttp的源码也是不熟悉,之后可以详细研究okhttp的源码.&lt;/p&gt;</description>
+      <description>&lt;p&gt;最近工作项目里添加网络缓存时看了这个项目,内容不多,有些方法可取便记录下来&lt;/p&gt;
+&lt;h2 id=&#34;原理&#34;&gt;原理&lt;/h2&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/yale8848/RetrofitCache&#34;&gt;RetrofitCache&lt;/a&gt; 使用的方式是okhttp原有的cache机制,然后它提供了标签的方式,在Retrofit上简单实现,减少代码入侵,这是这个库的价值.&lt;/p&gt;
+&lt;!-- more --&gt;
+&lt;h3 id=&#34;添加拦截器&#34;&gt;添加拦截器&lt;/h3&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;okhttp3.OkHttpClient.Builder clientBuilder=new okhttp3.OkHttpClient.Builder();
+...
+clientBuilder.addInterceptor(new CacheForceInterceptorNoNet());
+clientBuilder.addNetworkInterceptor(new CacheInterceptorOnNet());
+...
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;首先复习okhttp 的 addInterceptor 和 addNetworkInterceptor 的区别&lt;/p&gt;
+&lt;p&gt;&lt;img alt=&#34;image.png&#34; loading=&#34;lazy&#34; src=&#34;http://localhost:1313/posts/retrofitcache-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image_01.webp&#34;&gt;&lt;/p&gt;
+&lt;p&gt;addInterceptor是添加在与服务器连接之前和之后
+addNetworkInterceptor是添加在与服务器建立连接和发起请求的之间&lt;/p&gt;
+&lt;p&gt;具体参考 &lt;a href=&#34;http://www.idtkm.com/2017/10/26/Retrofit2%20&amp;amp;%20OkHttp3%20Interceptor/&#34;&gt;Retrofit2 + OkHttp3 配置及Interceptor原理&lt;/a&gt;&lt;/p&gt;
+&lt;h4 id=&#34;cacheinterceptoronnet&#34;&gt;CacheInterceptorOnNet&lt;/h4&gt;
+&lt;p&gt;CacheInterceptorOnNet是添加在与服务器建立连接和发起请求的之间&lt;/p&gt;
+&lt;p&gt;获取 maxAge 缓存时间&lt;/p&gt;
+&lt;p&gt;当需要缓存时&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt; return   response.newBuilder()
+                .removeHeader(&amp;#34;Cache-Control&amp;#34;)
+                .header(&amp;#34;Cache-Control&amp;#34;, &amp;#34;public,max-age=&amp;#34;+maxAge)
+                .removeHeader(&amp;#34;Pragma&amp;#34;)
+                .build();
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;通过header里面添加 public,max-age=maxAge来缓存,而缓存的实现由 okhttp 里面实现&lt;/p&gt;
+&lt;h4 id=&#34;cacheforceinterceptornonet&#34;&gt;CacheForceInterceptorNoNet&lt;/h4&gt;
+&lt;p&gt;CacheForceInterceptorNoNet类是处理服务器连接之前和之后
+功能同理,唯一不同的是在请求之前增加了是否网络连接状态的判断&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt; boolean forceCacheNoNet =  RetrofitCache.getInstance().getCacheTime(url).isForceCacheNoNet();
+        if (forceCacheNoNet&amp;amp;&amp;amp;!NetUtils.isConnectNet(RetrofitCache.getInstance().getContext())){
+            request = request.newBuilder()
+                    .cacheControl(CacheControl.FORCE_CACHE)
+                    .build();
+        }
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;当没有网络的情况下,通过调用okhttp的Cache-Control来改变状态
+具体参考 &lt;a href=&#34;http://www.cnblogs.com/whoislcj/p/5537640.html&#34;&gt;Android Okhttp网络请求之缓存控制Cache-Control&lt;/a&gt;&lt;/p&gt;
+&lt;h4 id=&#34;baseinterceptor&#34;&gt;BaseInterceptor&lt;/h4&gt;
+&lt;p&gt;在bese类里,一个核心的方法是mockResponse,获取在Api里通过标签添加的模拟数据和Asset获取的模拟数据.&lt;/p&gt;
+&lt;p&gt;而Mock类就是模拟数据的抽象类,而通过RetrofitCache.getInstance().getMockObject(url)获取
+使用Java Annotation注解的方式添加&lt;/p&gt;
+&lt;p&gt;具体参考 &lt;a href=&#34;https://www.cnblogs.com/skywang12345/p/3344137.html&#34;&gt;Java Annotation认知(包括框架图、详细介绍、示例说明)&lt;/a&gt;&lt;/p&gt;</description>
     </item>
     <item>
       <title>Android Gesture 手势研究</title>
       <link>http://localhost:1313/posts/android-gesture-%E6%89%8B%E5%8A%BF%E7%A0%94%E7%A9%B6/</link>
       <pubDate>Fri, 05 May 2017 13:15:33 +0000</pubDate>
       <guid>http://localhost:1313/posts/android-gesture-%E6%89%8B%E5%8A%BF%E7%A0%94%E7%A9%B6/</guid>
-      <description>&lt;p&gt;怎么理解一个手势,就是在屏幕上,手画一个符号就是一个手势,它代表了用户的一个意图,也就是用户希望程序做点什么,一般程序大多数是通过按钮,按钮上有对应的文字,这样进行人机交互,而手势也是很多地方会使用到,而常用的手势好像下拉刷新,用户希望列表内容下拉一下就有新的信息,双指缩放等等,一般这些手势都是跟对应的view绑定起来,而今天介绍的都是方法是可以不绑定view,直接在界面上画一个手势就可以人机交互.实现的代码可以在&lt;a href=&#34;https://github.com/steven2947/gestureDemo&#34;&gt;github上的Demo源码&lt;/a&gt;了解.&lt;/p&gt;&#xA;&lt;p&gt;这篇手势研究会大概分三部分&lt;/p&gt;&#xA;&lt;ol&gt;&#xA;&lt;li&gt;手势Gesture使用方式&lt;/li&gt;&#xA;&lt;li&gt;展示手势开发的步骤及代码实现&lt;/li&gt;&#xA;&lt;li&gt;分析Gesture的源码及原理&lt;/li&gt;&#xA;&lt;/ol&gt;&#xA;&lt;hr&gt;&#xA;&lt;h2 id=&#34;使用的方式&#34;&gt;使用的方式&lt;/h2&gt;&#xA;&lt;p&gt;首先我们需要把用户需要使用到的手势提前记录下来,准备一些手势的样本,在app安装时随着资源文件或者下载等方式存储到用户的手机里,当用户在app画一个手势时,就去匹配手势样本,当时样本最吻合时,就知道用户的意图,采取执行对应的功能,这样就是个很好的人机交互的方式.&lt;/p&gt;&#xA;&lt;p&gt;从上文使用方式,我们大概猜想到,我们需要一个东西,用来管理和读取我们已经存储的手势样本,我们还要需要这个东西可以设别用户的手势跟我们已经存储的手势进行匹配.还有,我们需一个东西在app的界面上记录用户的手势,没错,两个东西都存在,就是GestureLibrary和GestureOverlayView,这两个类就是手势开发里使用的主要两个类,通过这两个类,我们就可以实现手势开发的所有功能,是不是很简单.&lt;/p&gt;&#xA;&lt;p&gt;总结一下:&lt;/p&gt;&#xA;&lt;ol&gt;&#xA;&lt;li&gt;&#xA;&lt;pre&gt;&lt;code&gt;提前准备好手势样本,在安装时加入到资源文件或者安装后网络下载.&#xA;&lt;/code&gt;&lt;/pre&gt;&#xA;&lt;/li&gt;&#xA;&lt;li&gt;&#xA;&lt;pre&gt;&lt;code&gt;需要使用手势的界面里使用GestureOverlayView记录用户的手势,&#xA;&lt;/code&gt;&lt;/pre&gt;&#xA;&lt;/li&gt;&#xA;&lt;li&gt;&#xA;&lt;pre&gt;&lt;code&gt;使用GestureLibrary对象对用户的手势进行监听和匹配,找到用户手势的意图,执行对应的功能&#xA;&lt;/code&gt;&lt;/pre&gt;&#xA;&lt;/li&gt;&#xA;&lt;/ol&gt;&#xA;&lt;hr&gt;&#xA;&lt;h2 id=&#34;步骤及代码实现&#34;&gt;步骤及代码实现&lt;/h2&gt;&#xA;&lt;ol&gt;&#xA;&lt;li&gt;&#xA;&lt;p&gt;手势库的初始化&#xA;&lt;code&gt;GestureLibrary gLib=GestureLibraries.fromFile(手势库文件); gLib.load(); &lt;/code&gt;&#xA;这个过程是读取已经存储手势样本文件,构造出GestureLibrary实例的过程,需要第一步实现.&lt;/p&gt;&#xA;&lt;/li&gt;&#xA;&lt;li&gt;&#xA;&lt;p&gt;对用户手势的监听&#xA;&lt;code&gt;GestureOverlayView.addOnGesturePerformedListener() &lt;/code&gt;&lt;/p&gt;&#xA;&lt;/li&gt;&#xA;&lt;li&gt;&#xA;&lt;p&gt;使用GestureLibrary对用户的手势进行匹配&#xA;&lt;code&gt;recognize(Gesture gesture)&lt;/code&gt;&lt;/p&gt;&#xA;&lt;/li&gt;&#xA;&lt;li&gt;&#xA;&lt;p&gt;循环遍历返回的ArrayList&lt;!-- raw HTML omitted --&gt;对象，使用Prediction的score来匹配手势的相似度，&#xA;score越高代表越匹配.&#xA;&lt;code&gt;Prediction.score()&lt;/code&gt;&lt;/p&gt;&#xA;&lt;/li&gt;&#xA;&lt;/ol&gt;&#xA;&lt;p&gt;这里就是手势开发的实现的全部内容,但是作为一个程序猿,需要知其然知其所以然,就要对源码进行解剖.&lt;/p&gt;&#xA;&lt;hr&gt;&#xA;&lt;h2 id=&#34;原理&#34;&gt;原理&lt;/h2&gt;&#xA;&lt;h3 id=&#34;手势的结构&#34;&gt;手势的结构&lt;/h3&gt;&#xA;&lt;p&gt;手势是用户在屏幕上画的符号,那么手势可以简单的一笔笔画,例如一个方向的箭头(&amp;gt;),也可以多笔划,很复杂,例如一个文字.这些都手势,所以我们就知道&lt;/p&gt;&#xA;&lt;blockquote&gt;&#xA;&lt;p&gt;手势是由一个或者多个笔画组成&lt;/p&gt;&lt;/blockquote&gt;&#xA;&lt;p&gt;学过数学的我们都到线是由点组成的,所以&lt;/p&gt;&#xA;&lt;blockquote&gt;&#xA;&lt;p&gt;一个手势笔画是由多个时间连续的点组成&lt;/p&gt;&lt;/blockquote&gt;&#xA;&lt;p&gt;一个点意味着什么呢,它会固定在屏幕的某个地方,还需要时间连续不断,所以&lt;/p&gt;&#xA;&lt;blockquote&gt;&#xA;&lt;p&gt;手势中的点包含坐标X轴和Y轴,还有时间戳&lt;/p&gt;&lt;/blockquote&gt;&#xA;&lt;p&gt;所以我们就很容易了解手势对应的文件了&lt;/p&gt;&#xA;&lt;p&gt;&lt;strong&gt;GesturePoint&lt;/strong&gt; : 是手势笔划中的一个点,包含X轴,Y轴的坐标,还有时间戳.&#xA;&lt;strong&gt;GestureStroke&lt;/strong&gt; : 手势笔划,可以理解为线,由多个点组成的.&#xA;&lt;strong&gt;Gesture&lt;/strong&gt; : 手势,代表用户的一个手势,可以由一个或者多个手势笔划组成.&#xA;&lt;strong&gt;GestureStore&lt;/strong&gt; 手势仓库,里面存储了多个手势样本&lt;/p&gt;&#xA;&lt;hr&gt;&#xA;&lt;h3 id=&#34;手势的使用&#34;&gt;手势的使用&lt;/h3&gt;&#xA;&lt;p&gt;使用手势的过程都是先从GestureLibrary开始,那么看看GestureLibrary的关系图.&lt;/p&gt;&#xA;&lt;p&gt;&lt;img src=&#34;http://upload-images.jianshu.io/upload_images/26893-d73329f7da44c6ba.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&#34; alt=&#34;14937957345949.jpg&#34;&gt;&lt;/p&gt;&#xA;&lt;p&gt;从图中看,GestureLibrary的实现有两种,一个File的实现,另外一个是由资源Resource实现,说明我们的手势库可有两个方向可以构造.&lt;/p&gt;&#xA;&lt;p&gt;然后看回GestureLibrary的源码&lt;/p&gt;&#xA;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;public abstract class GestureLibrary {&#xA;     protected final GestureStore mStore;&#xA;     ...&#xA;}&#xA;&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;里面只有一个对象,而所有的方法都是由这个对象实现,也就是GestureLibrary其实是GestureStore的代理类,而真正的功能其实是在GestureStore里.&lt;/p&gt;</description>
+      <description>&lt;p&gt;怎么理解一个手势,就是在屏幕上,手画一个符号就是一个手势,它代表了用户的一个意图,也就是用户希望程序做点什么,一般程序大多数是通过按钮,按钮上有对应的文字,这样进行人机交互,而手势也是很多地方会使用到,而常用的手势好像下拉刷新,用户希望列表内容下拉一下就有新的信息,双指缩放等等,一般这些手势都是跟对应的view绑定起来,而今天介绍的都是方法是可以不绑定view,直接在界面上画一个手势就可以人机交互.实现的代码可以在&lt;a href=&#34;https://github.com/steven2947/gestureDemo&#34;&gt;github上的Demo源码&lt;/a&gt;了解.&lt;/p&gt;
+&lt;p&gt;这篇手势研究会大概分三部分&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;手势Gesture使用方式&lt;/li&gt;
+&lt;li&gt;展示手势开发的步骤及代码实现&lt;/li&gt;
+&lt;li&gt;分析Gesture的源码及原理&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;!-- more --&gt;
+&lt;h2 id=&#34;使用的方式&#34;&gt;使用的方式&lt;/h2&gt;
+&lt;p&gt;首先我们需要把用户需要使用到的手势提前记录下来,准备一些手势的样本,在app安装时随着资源文件或者下载等方式存储到用户的手机里,当用户在app画一个手势时,就去匹配手势样本,当时样本最吻合时,就知道用户的意图,采取执行对应的功能,这样就是个很好的人机交互的方式.&lt;/p&gt;
+&lt;p&gt;从上文使用方式,我们大概猜想到,我们需要一个东西,用来管理和读取我们已经存储的手势样本,我们还要需要这个东西可以设别用户的手势跟我们已经存储的手势进行匹配.还有,我们需一个东西在app的界面上记录用户的手势,没错,两个东西都存在,就是GestureLibrary和GestureOverlayView,这两个类就是手势开发里使用的主要两个类,通过这两个类,我们就可以实现手势开发的所有功能,是不是很简单.&lt;/p&gt;
+&lt;p&gt;总结一下:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;pre&gt;&lt;code&gt;提前准备好手势样本,在安装时加入到资源文件或者安装后网络下载.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;pre&gt;&lt;code&gt;需要使用手势的界面里使用GestureOverlayView记录用户的手势,
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;pre&gt;&lt;code&gt;使用GestureLibrary对象对用户的手势进行监听和匹配,找到用户手势的意图,执行对应的功能
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;步骤及代码实现&#34;&gt;步骤及代码实现&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;手势库的初始化
+&lt;code&gt;GestureLibrary gLib=GestureLibraries.fromFile(手势库文件); gLib.load(); &lt;/code&gt;
+这个过程是读取已经存储手势样本文件,构造出GestureLibrary实例的过程,需要第一步实现.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;对用户手势的监听
+&lt;code&gt;GestureOverlayView.addOnGesturePerformedListener() &lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;使用GestureLibrary对用户的手势进行匹配
+&lt;code&gt;recognize(Gesture gesture)&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;循环遍历返回的ArrayList&lt;Prediction&gt;对象，使用Prediction的score来匹配手势的相似度，
+score越高代表越匹配.
+&lt;code&gt;Prediction.score()&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;这里就是手势开发的实现的全部内容,但是作为一个程序猿,需要知其然知其所以然,就要对源码进行解剖.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;原理&#34;&gt;原理&lt;/h2&gt;
+&lt;h3 id=&#34;手势的结构&#34;&gt;手势的结构&lt;/h3&gt;
+&lt;p&gt;手势是用户在屏幕上画的符号,那么手势可以简单的一笔笔画,例如一个方向的箭头(&amp;gt;),也可以多笔划,很复杂,例如一个文字.这些都手势,所以我们就知道&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;手势是由一个或者多个笔画组成&lt;/p&gt;&lt;/blockquote&gt;
+&lt;p&gt;学过数学的我们都到线是由点组成的,所以&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;一个手势笔画是由多个时间连续的点组成&lt;/p&gt;&lt;/blockquote&gt;
+&lt;p&gt;一个点意味着什么呢,它会固定在屏幕的某个地方,还需要时间连续不断,所以&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;手势中的点包含坐标X轴和Y轴,还有时间戳&lt;/p&gt;&lt;/blockquote&gt;
+&lt;p&gt;所以我们就很容易了解手势对应的文件了&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;GesturePoint&lt;/strong&gt; : 是手势笔划中的一个点,包含X轴,Y轴的坐标,还有时间戳.
+&lt;strong&gt;GestureStroke&lt;/strong&gt; : 手势笔划,可以理解为线,由多个点组成的.
+&lt;strong&gt;Gesture&lt;/strong&gt; : 手势,代表用户的一个手势,可以由一个或者多个手势笔划组成.
+&lt;strong&gt;GestureStore&lt;/strong&gt; 手势仓库,里面存储了多个手势样本&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;手势的使用&#34;&gt;手势的使用&lt;/h3&gt;
+&lt;p&gt;使用手势的过程都是先从GestureLibrary开始,那么看看GestureLibrary的关系图.&lt;/p&gt;
+&lt;p&gt;&lt;img alt=&#34;14937957345949.jpg&#34; loading=&#34;lazy&#34; src=&#34;http://localhost:1313/posts/android-gesture-%E6%89%8B%E5%8A%BF%E7%A0%94%E7%A9%B6/image_01.webp&#34;&gt;&lt;/p&gt;
+&lt;p&gt;从图中看,GestureLibrary的实现有两种,一个File的实现,另外一个是由资源Resource实现,说明我们的手势库可有两个方向可以构造.&lt;/p&gt;
+&lt;p&gt;然后看回GestureLibrary的源码&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;public abstract class GestureLibrary {
+     protected final GestureStore mStore;
+     ...
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;里面只有一个对象,而所有的方法都是由这个对象实现,也就是GestureLibrary其实是GestureStore的代理类,而真正的功能其实是在GestureStore里.&lt;/p&gt;</description>
     </item>
   </channel>
 </rss>

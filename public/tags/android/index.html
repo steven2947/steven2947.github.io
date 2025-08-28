@@ -1,307 +1,291 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
-  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    
-    <title>Steven&#39;s Blog</title>
-    <meta name="viewport" content="width=device-width,minimum-scale=1">
-    <meta name="description" content="">
-    <meta name="generator" content="Hugo 0.149.0">
-    
-    
-    
-      <meta name="robots" content="noindex, nofollow">
-    
-    
+<html lang="en" dir="auto">
 
-    
-<link rel="stylesheet" href="/ananke/css/main.min.css" >
-
-
-
-
-    
-
-
-    
-      
-
-    
-
-    
-    
-      <link href="/tags/android/index.xml" rel="alternate" type="application/rss+xml" title="Steven&#39;s Blog" />
-      <link href="/tags/android/index.xml" rel="feed" type="application/rss+xml" title="Steven&#39;s Blog" />
-      
-    
-
-    
-      <link rel="canonical" href="http://localhost:1313/tags/android/">
-    
-
-    <meta property="og:url" content="http://localhost:1313/tags/android/">
-  <meta property="og:site_name" content="Steven&#39;s Blog">
-  <meta property="og:title" content="Android">
-  <meta property="og:locale" content="zh_CN">
-  <meta property="og:type" content="website">
-
-  <meta itemprop="name" content="Android">
-  <meta itemprop="datePublished" content="2018-06-07T11:55:33+00:00">
-  <meta itemprop="dateModified" content="2018-06-07T11:55:33+00:00">
-  <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Android">
-
-	
-  </head><body class="ma0 avenir bg-near-white development">
-
-    
-
-  <header>
-    <div class="pb3-m pb6-l bg-black">
-      <nav class="pv3 ph3 ph4-ns" role="navigation">
-  <div class="flex-l center items-center justify-between">
-    <a href="/" class="f3 fw2 hover-white white-90 dib no-underline">
-      
-        Steven&#39;s Blog
-      
-    </a>
-    <div class="flex-l items-center">
-      
-
-      
-      <div class="ananke-socials"></div>
-
-    </div>
-  </div>
-</nav>
-
-      <div class="tc-l pv3 ph3 ph4-ns">
-        <h1 class="f2 f-subheadline-l fw2 light-silver mb0 lh-title">
-          Android
-        </h1>
-        
-      </div>
-    </div>
-  </header>
-
-
-    <main class="pb7" role="main">
-      
-  <article class="cf pa3 pa4-m pa4-l">
-    <div class="measure-wide-l center f4 lh-copy nested-copy-line-height nested-links mid-gray">
-      <p>Below you will find pages that utilize the taxonomy term “Android”</p>
-    </div>
-  </article>
-  <div class="mw8 center">
-    <section class="flex-ns mt5 flex-wrap justify-around">
-      
-        <div class="w-100 mb4 relative bg-white">
-          <div class="w-100 mb4 nested-copy-line-height relative bg-white">
-  <div class="mb3 pa4 gray overflow-hidden bg-white">
-    <span class="f6 db">Posts</span>
-    <h1 class="f3 near-black">
-      <a href="/posts/android-install-apk-%E5%85%BC%E5%AE%B9%E8%87%B3-android-8/" class="link black dim">
-        Android install apk 兼容至 Android 8
-      </a>
-    </h1>
-    <div class="nested-links f5 lh-copy nested-copy-line-height">
-      <h2 id="前言">前言</h2>
-<p>以往安装apk都是很简单的方法, Intent 里添加apk的文件就可以调用系统安装界面.后来随着谷歌对安全的重视,从Android 7开始以往的方式都不能用,然而到Android 8 又有改动,相信随着Android 的发展,以后的版本也会有改动,崇尚模块化开发的我便希望每一个细小的功能,颗粒度最少的功能都可以由一个模块来负责,然后每个项目需要这个功能时调用这个模块即可,而这个模块只需要维护好自己的兼容性问题便解决所有项目的兼容性问题.</p>
-<p>本文思路是提供一个笔者暂时觉得最优的方案,然后原理分析提供每个Android 版本的安装的原理思路</p>
-<h2 id="最优解决方案-android-install-apk-库">最优解决方案 Android Install Apk 库</h2>
-<p>最优解决方案 :  <a href="https://github.com/steven2947/FitAndroid8">FitAndroid8</a></p>
-<p>首先笔者在解决Android 7 的安装问题时,遇到系统的私有目录访问限制问题,在解决同时感觉谷歌提供的解决方案特别麻烦,需要项目里因为针对Android 7 而增加一些文件和AndroidManifest 增加一些代码,这非常不合理,到了之后的版本或许又不一样,这些额外的代码都会带来维护的成本,后来搜索很久发现 <a href="https://github.com/hongyangAndroid/FitAndroid7">FitAndroid7</a> 这个库特别适合,在不用增加自己项目额外的代码同时,解决Android 7 以下的安装问题.然后到Android 8 系统时发现这个库功能失效,所以笔者便在前者的基础上稍微修改,让FitAndroid8能兼容暂时所有版本的安装,一行代码完成一个功能,不引入其他额外与项目无关的代码和文件.</p>
-<p>使用方式:</p>
-<pre tabindex="0"><code>public void installApk(View view) {
-    File file = new File(Environment.getExternalStorageDirectory(), &#34;app-debug.apk&#34;);
-    Intent intent = new Intent(Intent.ACTION_VIEW);
-    // 仅需改变这一行
-    FileProvider8.setIntentDataAndType(this,
-            intent, &#34;application/vnd.android.package-archive&#34;, file, true);
-    startActivity(intent);
-}
-</code></pre><h2 id="原理分析">原理分析</h2>
-<p>笔者的习惯是把问题用最简单的方式解决,同时也需要知道其原理,以下内容为原理解析.</p>
-<h3 id="android-8-如何安装apk">Android 8 如何安装apk</h3>
-<p>Android 8到时有了什么改变以致安装apk的方法有很大改变呢?</p>
-<p>在2017年8月29号的谷歌开发者博客中写道 <a href="http://developers.googleblog.cn/2017/08/android-o_29.html">&laquo;在 Android O 中更安全地获取应用&raquo;</a>新的安装未知应用的,Android O 禁用了总是安装未知应用的选择,改为安装未知应用时提出设置的提示,减少恶意应用通过虚假的安装界面欺骗用户行为.
-所以开发者需要调整AndroidManifest文件里的权限,增加 <a href="https://developer.android.google.cn/reference/android/Manifest.permission.html#REQUEST_INSTALL_PACKAGES">REQUEST_INSTALL_PACKAGES</a>权限.</p>
-<pre tabindex="0"><code>&lt;uses-permission android:name=&#34;android.permission.REQUEST_INSTALL_PACKAGES&#34; /&gt;
-</code></pre><p>谷歌建议是通过PackageManager <a href="https://developer.android.google.cn/reference/android/content/pm/PackageManager.html#canRequestPackageInstalls()">canRequestPackageInstalls()</a> 的API，查询此权限的状态,然后使用使用 <a href="https://developer.android.google.cn/reference/android/provider/Settings.html#ACTION_MANAGE_UNKNOWN_APP_SOURCES">ACTION_MANAGE_UNKNOWN_APP_SOURCES</a> Intent 操作</p>
-    </div>
-    <a href="/posts/android-install-apk-%E5%85%BC%E5%AE%B9%E8%87%B3-android-8/" class="ba b--moon-gray bg-light-gray br2 color-inherit dib f7 hover-bg-moon-gray link mt2 ph2 pv1">read more</a>
-  </div>
-</div>
-
-        </div>
-      
-        <div class="w-100 mb4 relative bg-white">
-          <div class="w-100 mb4 nested-copy-line-height relative bg-white">
-  <div class="mb3 pa4 gray overflow-hidden bg-white">
-    <span class="f6 db">Posts</span>
-    <h1 class="f3 near-black">
-      <a href="/posts/retrofitcache-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" class="link black dim">
-        RetrofitCache 源码分析
-      </a>
-    </h1>
-    <div class="nested-links f5 lh-copy nested-copy-line-height">
-      <p>最近工作项目里添加网络缓存时看了这个项目,内容不多,有些方法可取便记录下来</p>
-<h2 id="原理">原理</h2>
-<p><a href="https://github.com/yale8848/RetrofitCache">RetrofitCache</a> 使用的方式是okhttp原有的cache机制,然后它提供了标签的方式,在Retrofit上简单实现,减少代码入侵,这是这个库的价值.</p>
-<h3 id="添加拦截器">添加拦截器</h3>
-<pre tabindex="0"><code>okhttp3.OkHttpClient.Builder clientBuilder=new okhttp3.OkHttpClient.Builder();
-...
-clientBuilder.addInterceptor(new CacheForceInterceptorNoNet());
-clientBuilder.addNetworkInterceptor(new CacheInterceptorOnNet());
-...
-</code></pre><p>首先复习okhttp 的 addInterceptor 和 addNetworkInterceptor 的区别</p>
-<p><img src="https://upload-images.jianshu.io/upload_images/26893-40452c6192f5c0fa.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
-<p>addInterceptor是添加在与服务器连接之前和之后
-addNetworkInterceptor是添加在与服务器建立连接和发起请求的之间</p>
-<p>具体参考 <a href="http://www.idtkm.com/2017/10/26/Retrofit2%20&amp;%20OkHttp3%20Interceptor/">Retrofit2 + OkHttp3 配置及Interceptor原理</a></p>
-<h4 id="cacheinterceptoronnet">CacheInterceptorOnNet</h4>
-<p>CacheInterceptorOnNet是添加在与服务器建立连接和发起请求的之间</p>
-<p>获取 maxAge 缓存时间</p>
-<p>当需要缓存时</p>
-<pre tabindex="0"><code> return   response.newBuilder()
-                .removeHeader(&#34;Cache-Control&#34;)
-                .header(&#34;Cache-Control&#34;, &#34;public,max-age=&#34;+maxAge)
-                .removeHeader(&#34;Pragma&#34;)
-                .build();
-</code></pre><p>通过header里面添加 public,max-age=maxAge来缓存,而缓存的实现由 okhttp 里面实现</p>
-<h4 id="cacheforceinterceptornonet">CacheForceInterceptorNoNet</h4>
-<p>CacheForceInterceptorNoNet类是处理服务器连接之前和之后
-功能同理,唯一不同的是在请求之前增加了是否网络连接状态的判断</p>
-<pre tabindex="0"><code> boolean forceCacheNoNet =  RetrofitCache.getInstance().getCacheTime(url).isForceCacheNoNet();
-        if (forceCacheNoNet&amp;&amp;!NetUtils.isConnectNet(RetrofitCache.getInstance().getContext())){
-            request = request.newBuilder()
-                    .cacheControl(CacheControl.FORCE_CACHE)
-                    .build();
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="noindex, nofollow">
+<title>Android | Steven&#39;s Blog</title>
+<meta name="keywords" content="">
+<meta name="description" content="记录学习与生活 | 技术与思考">
+<meta name="author" content="你的名字">
+<link rel="canonical" href="http://localhost:1313/tags/android/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.8fe10233a706bc87f2e08b3cf97b8bd4c0a80f10675a143675d59212121037c0.css" integrity="sha256-j&#43;ECM6cGvIfy4Is8&#43;XuL1MCoDxBnWhQ2ddWSEhIQN8A=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" type="application/rss+xml" href="http://localhost:1313/tags/android/index.xml">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/tags/android/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
         }
-</code></pre><p>当没有网络的情况下,通过调用okhttp的Cache-Control来改变状态
-具体参考 <a href="http://www.cnblogs.com/whoislcj/p/5537640.html">Android Okhttp网络请求之缓存控制Cache-Control</a></p>
-<h4 id="baseinterceptor">BaseInterceptor</h4>
-<p>在bese类里,一个核心的方法是mockResponse,获取在Api里通过标签添加的模拟数据和Asset获取的模拟数据.</p>
-<p>而Mock类就是模拟数据的抽象类,而通过RetrofitCache.getInstance().getMockObject(url)获取
-使用Java Annotation注解的方式添加</p>
-<p>具体参考 <a href="https://www.cnblogs.com/skywang12345/p/3344137.html">Java Annotation认知(包括框架图、详细介绍、示例说明)</a></p>
-<h3 id="总结">总结</h3>
-<p>这个第三库的本质是使用的okhttp的缓存机制,使用Java Annotation的方法灵活在API里添加注解,以往项目的注解的使用并不多,可以多用这方式提高代码的简洁性,而okhttp的源码也是不熟悉,之后可以详细研究okhttp的源码.</p>
-    </div>
-    <a href="/posts/retrofitcache-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" class="ba b--moon-gray bg-light-gray br2 color-inherit dib f7 hover-bg-moon-gray link mt2 ph2 pv1">read more</a>
-  </div>
-</div>
 
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+</head>
+
+<body class="list" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="Steven&#39;s Blog (Alt + H)">Steven&#39;s Blog</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
         </div>
-      
-        <div class="w-100 mb4 relative bg-white">
-          <div class="w-100 mb4 nested-copy-line-height relative bg-white">
-  <div class="mb3 pa4 gray overflow-hidden bg-white">
-    <span class="f6 db">Posts</span>
-    <h1 class="f3 near-black">
-      <a href="/posts/android-gesture-%E6%89%8B%E5%8A%BF%E7%A0%94%E7%A9%B6/" class="link black dim">
-        Android Gesture 手势研究
-      </a>
-    </h1>
-    <div class="nested-links f5 lh-copy nested-copy-line-height">
-      <p>怎么理解一个手势,就是在屏幕上,手画一个符号就是一个手势,它代表了用户的一个意图,也就是用户希望程序做点什么,一般程序大多数是通过按钮,按钮上有对应的文字,这样进行人机交互,而手势也是很多地方会使用到,而常用的手势好像下拉刷新,用户希望列表内容下拉一下就有新的信息,双指缩放等等,一般这些手势都是跟对应的view绑定起来,而今天介绍的都是方法是可以不绑定view,直接在界面上画一个手势就可以人机交互.实现的代码可以在<a href="https://github.com/steven2947/gestureDemo">github上的Demo源码</a>了解.</p>
-<p>这篇手势研究会大概分三部分</p>
-<ol>
-<li>手势Gesture使用方式</li>
-<li>展示手势开发的步骤及代码实现</li>
-<li>分析Gesture的源码及原理</li>
-</ol>
-<hr>
-<h2 id="使用的方式">使用的方式</h2>
-<p>首先我们需要把用户需要使用到的手势提前记录下来,准备一些手势的样本,在app安装时随着资源文件或者下载等方式存储到用户的手机里,当用户在app画一个手势时,就去匹配手势样本,当时样本最吻合时,就知道用户的意图,采取执行对应的功能,这样就是个很好的人机交互的方式.</p>
-<p>从上文使用方式,我们大概猜想到,我们需要一个东西,用来管理和读取我们已经存储的手势样本,我们还要需要这个东西可以设别用户的手势跟我们已经存储的手势进行匹配.还有,我们需一个东西在app的界面上记录用户的手势,没错,两个东西都存在,就是GestureLibrary和GestureOverlayView,这两个类就是手势开发里使用的主要两个类,通过这两个类,我们就可以实现手势开发的所有功能,是不是很简单.</p>
-<p>总结一下:</p>
-<ol>
-<li>
-<pre><code>提前准备好手势样本,在安装时加入到资源文件或者安装后网络下载.
-</code></pre>
-</li>
-<li>
-<pre><code>需要使用手势的界面里使用GestureOverlayView记录用户的手势,
-</code></pre>
-</li>
-<li>
-<pre><code>使用GestureLibrary对象对用户的手势进行监听和匹配,找到用户手势的意图,执行对应的功能
-</code></pre>
-</li>
-</ol>
-<hr>
-<h2 id="步骤及代码实现">步骤及代码实现</h2>
-<ol>
-<li>
-<p>手势库的初始化
-<code>GestureLibrary gLib=GestureLibraries.fromFile(手势库文件); gLib.load(); </code>
-这个过程是读取已经存储手势样本文件,构造出GestureLibrary实例的过程,需要第一步实现.</p>
-</li>
-<li>
-<p>对用户手势的监听
-<code>GestureOverlayView.addOnGesturePerformedListener() </code></p>
-</li>
-<li>
-<p>使用GestureLibrary对用户的手势进行匹配
-<code>recognize(Gesture gesture)</code></p>
-</li>
-<li>
-<p>循环遍历返回的ArrayList<!-- raw HTML omitted -->对象，使用Prediction的score来匹配手势的相似度，
-score越高代表越匹配.
-<code>Prediction.score()</code></p>
-</li>
-</ol>
-<p>这里就是手势开发的实现的全部内容,但是作为一个程序猿,需要知其然知其所以然,就要对源码进行解剖.</p>
-<hr>
-<h2 id="原理">原理</h2>
-<h3 id="手势的结构">手势的结构</h3>
-<p>手势是用户在屏幕上画的符号,那么手势可以简单的一笔笔画,例如一个方向的箭头(&gt;),也可以多笔划,很复杂,例如一个文字.这些都手势,所以我们就知道</p>
-<blockquote>
-<p>手势是由一个或者多个笔画组成</p></blockquote>
-<p>学过数学的我们都到线是由点组成的,所以</p>
-<blockquote>
-<p>一个手势笔画是由多个时间连续的点组成</p></blockquote>
-<p>一个点意味着什么呢,它会固定在屏幕的某个地方,还需要时间连续不断,所以</p>
-<blockquote>
-<p>手势中的点包含坐标X轴和Y轴,还有时间戳</p></blockquote>
-<p>所以我们就很容易了解手势对应的文件了</p>
-<p><strong>GesturePoint</strong> : 是手势笔划中的一个点,包含X轴,Y轴的坐标,还有时间戳.
-<strong>GestureStroke</strong> : 手势笔划,可以理解为线,由多个点组成的.
-<strong>Gesture</strong> : 手势,代表用户的一个手势,可以由一个或者多个手势笔划组成.
-<strong>GestureStore</strong> 手势仓库,里面存储了多个手势样本</p>
-<hr>
-<h3 id="手势的使用">手势的使用</h3>
-<p>使用手势的过程都是先从GestureLibrary开始,那么看看GestureLibrary的关系图.</p>
-<p><img src="http://upload-images.jianshu.io/upload_images/26893-d73329f7da44c6ba.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="14937957345949.jpg"></p>
-<p>从图中看,GestureLibrary的实现有两种,一个File的实现,另外一个是由资源Resource实现,说明我们的手势库可有两个方向可以构造.</p>
-<p>然后看回GestureLibrary的源码</p>
-<pre tabindex="0"><code>public abstract class GestureLibrary {
-     protected final GestureStore mStore;
-     ...
-}
-</code></pre><p>里面只有一个对象,而所有的方法都是由这个对象实现,也就是GestureLibrary其实是GestureStore的代理类,而真正的功能其实是在GestureStore里.</p>
-    </div>
-    <a href="/posts/android-gesture-%E6%89%8B%E5%8A%BF%E7%A0%94%E7%A9%B6/" class="ba b--moon-gray bg-light-gray br2 color-inherit dib f7 hover-bg-moon-gray link mt2 ph2 pv1">read more</a>
-  </div>
-</div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/" title="首页">
+                    <span>首页</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/categories/" title="分类">
+                    <span>分类</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/tags/" title="标签">
+                    <span>标签</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/about/" title="关于">
+                    <span>关于</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main"> 
+<header class="page-header">
+  <h1>
+    Android
+    <a href="/tags/android/index.xml" title="RSS" aria-label="RSS">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" height="23">
+        <path d="M4 11a9 9 0 0 1 9 9" />
+        <path d="M4 4a16 16 0 0 1 16 16" />
+        <circle cx="5" cy="19" r="1" />
+      </svg>
+    </a>
+  </h1>
+</header>
 
-        </div>
-      
-    </section>
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Android install apk 兼容至 Android 8
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>前言 以往安装apk都是很简单的方法, Intent 里添加apk的文件就可以调用系统安装界面.后来随着谷歌对安全的重视,从Android 7开始以往的方式都不能用,然而到Android 8 又有改动,相信随着Android 的发展,以后的版本也会有改动,崇尚模块化开发的我便希望每一个细小的功能,颗粒度最少的功能都可以由一个模块来负责,然后每个项目需要这个功能时调用这个模块即可,而这个模块只需要维护好自己的兼容性问题便解决所有项目的兼容性问题.
+本文思路是提供一个笔者暂时觉得最优的方案,然后原理分析提供每个Android 版本的安装的原理思路
+最优解决方案 Android Install Apk 库 最优解决方案 : FitAndroid8
+首先笔者在解决Android 7 的安装问题时,遇到系统的私有目录访问限制问题,在解决同时感觉谷歌提供的解决方案特别麻烦,需要项目里因为针对Android 7 而增加一些文件和AndroidManifest 增加一些代码,这非常不合理,到了之后的版本或许又不一样,这些额外的代码都会带来维护的成本,后来搜索很久发现 FitAndroid7 这个库特别适合,在不用增加自己项目额外的代码同时,解决Android 7 以下的安装问题.然后到Android 8 系统时发现这个库功能失效,所以笔者便在前者的基础上稍微修改,让FitAndroid8能兼容暂时所有版本的安装,一行代码完成一个功能,不引入其他额外与项目无关的代码和文件.
+使用方式:
+public void installApk(View view) { File file = new File(Environment.getExternalStorageDirectory(), &#34;app-debug.apk&#34;); Intent intent = new Intent(Intent.ACTION_VIEW); // 仅需改变这一行 FileProvider8.setIntentDataAndType(this, intent, &#34;application/vnd.android.package-archive&#34;, file, true); startActivity(intent); } 原理分析 笔者的习惯是把问题用最简单的方式解决,同时也需要知道其原理,以下内容为原理解析.
+Android 8 如何安装apk Android 8到时有了什么改变以致安装apk的方法有很大改变呢?
+在2017年8月29号的谷歌开发者博客中写道 «在 Android O 中更安全地获取应用»新的安装未知应用的,Android O 禁用了总是安装未知应用的选择,改为安装未知应用时提出设置的提示,减少恶意应用通过虚假的安装界面欺骗用户行为. 所以开发者需要调整AndroidManifest文件里的权限,增加 REQUEST_INSTALL_PACKAGES权限.
+...</p>
   </div>
+  <footer class="entry-footer"><span title='2018-06-07 11:55:33 +0000 UTC'>June 7, 2018</span>&nbsp;·&nbsp;2 min&nbsp;·&nbsp;你的名字</footer>
+  <a class="entry-link" aria-label="post link to Android install apk 兼容至 Android 8" href="http://localhost:1313/posts/android-install-apk-%E5%85%BC%E5%AE%B9%E8%87%B3-android-8/"></a>
+</article>
 
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">RetrofitCache 源码分析
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>最近工作项目里添加网络缓存时看了这个项目,内容不多,有些方法可取便记录下来
+原理 RetrofitCache 使用的方式是okhttp原有的cache机制,然后它提供了标签的方式,在Retrofit上简单实现,减少代码入侵,这是这个库的价值.
+添加拦截器 okhttp3.OkHttpClient.Builder clientBuilder=new okhttp3.OkHttpClient.Builder(); ... clientBuilder.addInterceptor(new CacheForceInterceptorNoNet()); clientBuilder.addNetworkInterceptor(new CacheInterceptorOnNet()); ... 首先复习okhttp 的 addInterceptor 和 addNetworkInterceptor 的区别
+addInterceptor是添加在与服务器连接之前和之后 addNetworkInterceptor是添加在与服务器建立连接和发起请求的之间
+具体参考 Retrofit2 &#43; OkHttp3 配置及Interceptor原理
+CacheInterceptorOnNet CacheInterceptorOnNet是添加在与服务器建立连接和发起请求的之间
+获取 maxAge 缓存时间
+当需要缓存时
+return response.newBuilder() .removeHeader(&#34;Cache-Control&#34;) .header(&#34;Cache-Control&#34;, &#34;public,max-age=&#34;&#43;maxAge) .removeHeader(&#34;Pragma&#34;) .build(); 通过header里面添加 public,max-age=maxAge来缓存,而缓存的实现由 okhttp 里面实现
+CacheForceInterceptorNoNet CacheForceInterceptorNoNet类是处理服务器连接之前和之后 功能同理,唯一不同的是在请求之前增加了是否网络连接状态的判断
+boolean forceCacheNoNet = RetrofitCache.getInstance().getCacheTime(url).isForceCacheNoNet(); if (forceCacheNoNet&amp;&amp;!NetUtils.isConnectNet(RetrofitCache.getInstance().getContext())){ request = request.newBuilder() .cacheControl(CacheControl.FORCE_CACHE) .build(); } 当没有网络的情况下,通过调用okhttp的Cache-Control来改变状态 具体参考 Android Okhttp网络请求之缓存控制Cache-Control
+BaseInterceptor 在bese类里,一个核心的方法是mockResponse,获取在Api里通过标签添加的模拟数据和Asset获取的模拟数据.
+而Mock类就是模拟数据的抽象类,而通过RetrofitCache.getInstance().getMockObject(url)获取 使用Java Annotation注解的方式添加
+具体参考 Java Annotation认知(包括框架图、详细介绍、示例说明)
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2018-05-22 15:43:33 +0000 UTC'>May 22, 2018</span>&nbsp;·&nbsp;1 min&nbsp;·&nbsp;你的名字</footer>
+  <a class="entry-link" aria-label="post link to RetrofitCache 源码分析" href="http://localhost:1313/posts/retrofitcache-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Android Gesture 手势研究
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>怎么理解一个手势,就是在屏幕上,手画一个符号就是一个手势,它代表了用户的一个意图,也就是用户希望程序做点什么,一般程序大多数是通过按钮,按钮上有对应的文字,这样进行人机交互,而手势也是很多地方会使用到,而常用的手势好像下拉刷新,用户希望列表内容下拉一下就有新的信息,双指缩放等等,一般这些手势都是跟对应的view绑定起来,而今天介绍的都是方法是可以不绑定view,直接在界面上画一个手势就可以人机交互.实现的代码可以在github上的Demo源码了解.
+这篇手势研究会大概分三部分
+手势Gesture使用方式 展示手势开发的步骤及代码实现 分析Gesture的源码及原理 使用的方式 首先我们需要把用户需要使用到的手势提前记录下来,准备一些手势的样本,在app安装时随着资源文件或者下载等方式存储到用户的手机里,当用户在app画一个手势时,就去匹配手势样本,当时样本最吻合时,就知道用户的意图,采取执行对应的功能,这样就是个很好的人机交互的方式.
+从上文使用方式,我们大概猜想到,我们需要一个东西,用来管理和读取我们已经存储的手势样本,我们还要需要这个东西可以设别用户的手势跟我们已经存储的手势进行匹配.还有,我们需一个东西在app的界面上记录用户的手势,没错,两个东西都存在,就是GestureLibrary和GestureOverlayView,这两个类就是手势开发里使用的主要两个类,通过这两个类,我们就可以实现手势开发的所有功能,是不是很简单.
+总结一下:
+提前准备好手势样本,在安装时加入到资源文件或者安装后网络下载. 需要使用手势的界面里使用GestureOverlayView记录用户的手势, 使用GestureLibrary对象对用户的手势进行监听和匹配,找到用户手势的意图,执行对应的功能 步骤及代码实现 手势库的初始化 GestureLibrary gLib=GestureLibraries.fromFile(手势库文件); gLib.load(); 这个过程是读取已经存储手势样本文件,构造出GestureLibrary实例的过程,需要第一步实现.
+对用户手势的监听 GestureOverlayView.addOnGesturePerformedListener() 使用GestureLibrary对用户的手势进行匹配 recognize(Gesture gesture)
+循环遍历返回的ArrayList对象，使用Prediction的score来匹配手势的相似度， score越高代表越匹配. Prediction.score()
+这里就是手势开发的实现的全部内容,但是作为一个程序猿,需要知其然知其所以然,就要对源码进行解剖.
+原理 手势的结构 手势是用户在屏幕上画的符号,那么手势可以简单的一笔笔画,例如一个方向的箭头(&gt;),也可以多笔划,很复杂,例如一个文字.这些都手势,所以我们就知道
+手势是由一个或者多个笔画组成
+学过数学的我们都到线是由点组成的,所以
+一个手势笔画是由多个时间连续的点组成
+一个点意味着什么呢,它会固定在屏幕的某个地方,还需要时间连续不断,所以
+手势中的点包含坐标X轴和Y轴,还有时间戳
+所以我们就很容易了解手势对应的文件了
+GesturePoint : 是手势笔划中的一个点,包含X轴,Y轴的坐标,还有时间戳. GestureStroke : 手势笔划,可以理解为线,由多个点组成的. Gesture : 手势,代表用户的一个手势,可以由一个或者多个手势笔划组成. GestureStore 手势仓库,里面存储了多个手势样本
+手势的使用 使用手势的过程都是先从GestureLibrary开始,那么看看GestureLibrary的关系图.
+从图中看,GestureLibrary的实现有两种,一个File的实现,另外一个是由资源Resource实现,说明我们的手势库可有两个方向可以构造.
+然后看回GestureLibrary的源码
+public abstract class GestureLibrary { protected final GestureStore mStore; ... } 里面只有一个对象,而所有的方法都是由这个对象实现,也就是GestureLibrary其实是GestureStore的代理类,而真正的功能其实是在GestureStore里.
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2017-05-05 13:15:33 +0000 UTC'>May 5, 2017</span>&nbsp;·&nbsp;6 min&nbsp;·&nbsp;你的名字</footer>
+  <a class="entry-link" aria-label="post link to Android Gesture 手势研究" href="http://localhost:1313/posts/android-gesture-%E6%89%8B%E5%8A%BF%E7%A0%94%E7%A9%B6/"></a>
+</article>
     </main>
-    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
-  <div class="flex justify-between">
-  <a class="f4 fw4 hover-white white-70 dn dib-ns pv2 ph3 no-underline" href="http://localhost:1313/" >
-    &copy;  Steven's Blog 2025 
-  </a>
-    <div><div class="ananke-socials"></div>
-</div>
-  </div>
-</footer>
+    
+<footer class="footer">
+        <span>&copy; 2025 <a href="http://localhost:1313/">Steven&#39;s Blog</a></span> · 
 
-  </body>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
 </html>

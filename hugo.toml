@@ -5,4 +5,84 @@ languageCode = "zh-CN"
 # 网站标题
 title = "Steven's Blog"
 # 选择使用的主题
-theme = "ananke"
+theme = "PaperMod"
+
+enableInlineShortcodes = true
+enableRobotsTXT = true
+
+buildDrafts = false
+buildFuture = false
+buildExpired = false
+
+[pagination]
+  pagerSize = 10
+
+[outputs]
+  home = ["HTML", "RSS", "JSON"] # 开启搜索需要 JSON
+
+[params]
+  # 基本信息
+  description = "记录学习与生活 | 技术与思考"
+  author = "你的名字"
+
+  # 首页配置
+  homeInfoParams = { Title = "👋 欢迎来到我的博客", Content = "这里记录技术、成长与思考。" }
+
+  # 主题风格
+  defaultTheme = "auto" # auto, dark, light
+  ShowReadingTime = true
+  ShowShareButtons = true
+  ShowPostNavLinks = true
+  ShowCodeCopyButtons = true
+  ShowRssButtonInSectionTermList = true
+
+  # 归档页面
+  ShowArchive = true
+
+  # 页面底部版权
+  copyright = "© 2025 Steven"
+
+# ======================
+# 菜单配置
+# ======================
+[[menu.main]]
+  name = "首页"
+  url = "/"
+  weight = 1
+
+[[menu.main]]
+  name = "分类"
+  url = "/categories/"
+  weight = 2
+
+[[menu.main]]
+  name = "标签"
+  url = "/tags/"
+  weight = 3
+
+[[menu.main]]
+  name = "关于"
+  url = "/about/"
+  weight = 4
+
+# ======================
+# 社交链接
+# ======================
+[[params.social]]
+  name = "GitHub"
+  url = "https://github.com/steven2947"
+
+[[params.social]]
+  name = "Email"
+  url = "steven2947@163.com"
+
+# ======================
+# Markdown 渲染优化
+# ======================
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true # 允许在文章里写 HTML
+  [markup.highlight]
+    noClasses = false
+    style = "monokai" # 代码高亮主题，可换为 dracula, github, etc.

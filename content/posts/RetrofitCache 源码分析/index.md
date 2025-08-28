@@ -2,6 +2,8 @@
 title: RetrofitCache 源码分析
 date: 2018-05-22 15:43:33
 draft: false
+categories: ["移动开发"]
+tags: ["源码解读","Android"]
 ---
 
 
@@ -25,7 +27,7 @@ clientBuilder.addNetworkInterceptor(new CacheInterceptorOnNet());
 
 首先复习okhttp 的 addInterceptor 和 addNetworkInterceptor 的区别
 
-![image.png](https://upload-images.jianshu.io/upload_images/26893-40452c6192f5c0fa.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![image.png](image_01.webp)
 
 
 

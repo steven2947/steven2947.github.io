@@ -2,6 +2,8 @@
 title: Android Gesture 手势研究
 date: 2017-05-05 13:15:33
 draft: false
+categories: ["移动开发"]
+tags: ["源码解读","Android"]
 ---
 
 怎么理解一个手势,就是在屏幕上,手画一个符号就是一个手势,它代表了用户的一个意图,也就是用户希望程序做点什么,一般程序大多数是通过按钮,按钮上有对应的文字,这样进行人机交互,而手势也是很多地方会使用到,而常用的手势好像下拉刷新,用户希望列表内容下拉一下就有新的信息,双指缩放等等,一般这些手势都是跟对应的view绑定起来,而今天介绍的都是方法是可以不绑定view,直接在界面上画一个手势就可以人机交互.实现的代码可以在[github上的Demo源码](https://github.com/steven2947/gestureDemo)了解.
@@ -79,7 +81,7 @@ draft: false
 使用手势的过程都是先从GestureLibrary开始,那么看看GestureLibrary的关系图.
 
 
-![14937957345949.jpg](http://upload-images.jianshu.io/upload_images/26893-d73329f7da44c6ba.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![14937957345949.jpg](image_01.webp)
 
 
 从图中看,GestureLibrary的实现有两种,一个File的实现,另外一个是由资源Resource实现,说明我们的手势库可有两个方向可以构造.

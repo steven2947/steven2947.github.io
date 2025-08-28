@@ -2,6 +2,8 @@
 title: Android install apk 兼容至 Android 8
 date: 2018-06-07 11:55:33
 draft: false
+categories: ["移动开发"]
+tags: ["Android"]
 ---
 
 ## 前言
@@ -54,15 +56,15 @@ Android 8到时有了什么改变以致安装apk的方法有很大改变呢?
 
 但是笔者不建议这样使用,因为使用 [ACTION_MANAGE_UNKNOWN_APP_SOURCES](https://developer.android.google.cn/reference/android/provider/Settings.html#ACTION_MANAGE_UNKNOWN_APP_SOURCES) Intent 操作后会跳到所有应用列表,然后从众多的应用里选择对应的APP的选择进入再打开权限,这样的用户体验不好.
 
-![image.png](https://upload-images.jianshu.io/upload_images/26893-6ba68c1b6332ee5c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![image.png](image_03.webp)
 
 所以笔者建议不使用判断和Intent跳转.而是直接使用Intent里带apk的安装,会有提示,然后直接进入权限开关的界面,这样的体验相对好,而发现其他的主流的APP安装时也是这样.
 
 流程如下:
 
-![packageinstaller-InstallStart-06072018110113.png](https://upload-images.jianshu.io/upload_images/26893-d754617921f3b97d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![packageinstaller-InstallStart-06072018110113.png](image_01.webp)
 
-![packageinstaller-InstallStart-06072018110134.png](https://upload-images.jianshu.io/upload_images/26893-ff06b8e461a88706.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![packageinstaller-InstallStart-06072018110134.png](image_02.webp)
 
 
 
