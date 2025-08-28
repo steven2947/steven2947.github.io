@@ -1,0 +1,34 @@
+name: Deploy Hugo to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main  # 在推送到main分支时触发
+  workflow_dispatch:  # 允许手动触发
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive  # 如果使用主题子模块，这很重要
+          fetch-depth: 0
+
+      - name: Setup Hugo
+        uses: peaceiris/actions-hugo@v2
+        with:
+          hugo-version: '0.149.0'  # 使用您的Hugo版本
+
+      - name: Build
+        run: hugo --minify
+
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          personal_token: ${{ secrets.GITHUB_TOKEN }}
+          external_repository: steven2947/steven2947.github.io  # 例如: johnsmith/johnsmith.github.io
+          publish_dir: ./public
+          keep_files: false
+          publish_branch: main
