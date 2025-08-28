@@ -6,8 +6,26 @@
     <description>Recent content in Posts on Steven&#39;s Blog</description>
     <generator>Hugo -- 0.149.0</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Thu, 07 Jun 2018 11:55:33 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 27 Jan 2025 10:00:00 +0800</lastBuildDate>
     <atom:link href="http://localhost:1313/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>测试 Giscus 评论功能</title>
+      <link>http://localhost:1313/posts/test-giscus-comments/</link>
+      <pubDate>Mon, 27 Jan 2025 10:00:00 +0800</pubDate>
+      <guid>http://localhost:1313/posts/test-giscus-comments/</guid>
+      <description>&lt;p&gt;这是一个测试页面，用来验证 Giscus 评论功能是否正常工作。&lt;/p&gt;
+&lt;h2 id=&#34;测试内容&#34;&gt;测试内容&lt;/h2&gt;
+&lt;p&gt;如果你能看到下面的评论框，说明 Giscus 评论功能已经成功集成到你的 Hugo 博客中了！&lt;/p&gt;
+&lt;h3 id=&#34;功能特点&#34;&gt;功能特点&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;支持 GitHub 账号登录&lt;/li&gt;
+&lt;li&gt;实时同步评论&lt;/li&gt;
+&lt;li&gt;支持表情反应&lt;/li&gt;
+&lt;li&gt;自动主题切换&lt;/li&gt;
+&lt;li&gt;多语言支持&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;请在下方留下你的评论来测试功能！&lt;/p&gt;</description>
+    </item>
     <item>
       <title>Android install apk 兼容至 Android 8</title>
       <link>http://localhost:1313/posts/android-install-apk-%E5%85%BC%E5%AE%B9%E8%87%B3-android-8/</link>

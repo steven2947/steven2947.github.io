@@ -41,9 +41,11 @@ buildExpired = false
 
   # 页面底部版权
   copyright = "© 2025 Steven"
+  
+  # 启用评论功能
+  comments = true
 
-[params.comment]
-  provider = "giscus"
+[params.giscus]
   repo = "steven2947/blog-comments"           # GitHub 仓库
   repoID = "R_kgDOPlsQ9A"                     # Giscus 提供的 repo ID
   category = "Announcements"                  # Issue 分类名称
