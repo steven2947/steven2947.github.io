@@ -9,31 +9,31 @@
     <lastBuildDate>Thu, 28 Aug 2025 16:00:00 +0800</lastBuildDate>
     <atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>关于</title>
+      <title>About Me</title>
       <link>http://localhost:1313/about/</link>
       <pubDate>Thu, 28 Aug 2025 16:00:00 +0800</pubDate>
       <guid>http://localhost:1313/about/</guid>
-      <description>&lt;p&gt;&lt;img alt=&#34;头像&#34; loading=&#34;lazy&#34; src=&#34;http://localhost:1313/about/avatar.png&#34;&gt;&lt;/p&gt;
-&lt;p&gt;你好，我是 &lt;strong&gt;Steven&lt;/strong&gt;，一名拥有多年 Android 开发经验的技术工程师。&lt;/p&gt;
-&lt;h3 id=&#34;我的经历&#34;&gt;我的经历&lt;/h3&gt;
+      <description>&lt;p&gt;&lt;img alt=&#34;Avatar&#34; loading=&#34;lazy&#34; src=&#34;http://localhost:1313/about/avatar.png&#34;&gt;&lt;/p&gt;
+&lt;p&gt;Hi, I’m &lt;strong&gt;Steven&lt;/strong&gt;, a senior Android developer with years of experience in building complex systems.&lt;/p&gt;
+&lt;h3 id=&#34;experience&#34;&gt;Experience&lt;/h3&gt;
 &lt;ul&gt;
-&lt;li&gt;曾参与多个 &lt;strong&gt;ERP 企业系统开发&lt;/strong&gt;，熟悉业务流程与复杂架构设计&lt;/li&gt;
-&lt;li&gt;在广告系统领域有多年经验，擅长 SDK 和大规模系统架构&lt;/li&gt;
-&lt;li&gt;深入 Android 反编译与底层源码研究，能够快速定位和解决问题&lt;/li&gt;
-&lt;li&gt;熟悉 AI 编程及大模型应用，正在尝试将 AI 与开发流程结合&lt;/li&gt;
+&lt;li&gt;Worked on &lt;strong&gt;ERP enterprise systems&lt;/strong&gt;, gaining deep understanding of business processes and system architecture&lt;/li&gt;
+&lt;li&gt;Extensive experience in &lt;strong&gt;advertising systems&lt;/strong&gt;, including SDK development and large-scale architectures&lt;/li&gt;
+&lt;li&gt;Skilled in &lt;strong&gt;Android reverse engineering&lt;/strong&gt;, capable of analyzing and troubleshooting apps at a low level&lt;/li&gt;
+&lt;li&gt;Exploring &lt;strong&gt;AI-assisted development&lt;/strong&gt;, including code generation and intelligent testing&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h3 id=&#34;我的技能&#34;&gt;我的技能&lt;/h3&gt;
+&lt;h3 id=&#34;skills&#34;&gt;Skills&lt;/h3&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;Android&lt;/strong&gt;：Kotlin / Java / Gradle / AOSP 源码&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;后端&lt;/strong&gt;：Java / Spring Boot / 数据库&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;AI 编程&lt;/strong&gt;：大模型调用、代码自动生成、智能测试&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;工具&lt;/strong&gt;：Git / GitHub / Jenkins / Docker&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Android&lt;/strong&gt;: Kotlin / Java / Gradle / AOSP source code&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Backend&lt;/strong&gt;: Java / Spring Boot / Databases&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;AI Development&lt;/strong&gt;: Large language models, automation, and AI-driven tools&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Tools&lt;/strong&gt;: Git / GitHub / Jenkins / Docker / Hugo&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h3 id=&#34;兴趣与目标&#34;&gt;兴趣与目标&lt;/h3&gt;
+&lt;h3 id=&#34;interests--goals&#34;&gt;Interests &amp;amp; Goals&lt;/h3&gt;
 &lt;ul&gt;
-&lt;li&gt;记录技术与生活，分享开发经验与思考&lt;/li&gt;
-&lt;li&gt;探索 AI 在开发中的应用，提升编程效率&lt;/li&gt;
-&lt;li&gt;长期打造个人技术博客与知识库&lt;/li&gt;
+&lt;li&gt;Share knowledge and insights about technology and development&lt;/li&gt;
+&lt;li&gt;Explore practical AI applications to improve programming efficiency&lt;/li&gt;
+&lt;li&gt;Build a professional personal blog and technical knowledge base&lt;/li&gt;
 &lt;/ul&gt;</description>
     </item>
     <item>

@@ -1,27 +1,26 @@
 ---
-title: "关于"
+title: "About Me"
 date: 2025-08-28T16:00:00+08:00
 draft: false
 ---
 
+![Avatar](avatar.png)
 
-![头像](avatar.png)
+Hi, I’m **Steven**, a senior Android developer with years of experience in building complex systems.  
 
-你好，我是 **Steven**，一名拥有多年 Android 开发经验的技术工程师。  
+### Experience
+- Worked on **ERP enterprise systems**, gaining deep understanding of business processes and system architecture  
+- Extensive experience in **advertising systems**, including SDK development and large-scale architectures  
+- Skilled in **Android reverse engineering**, capable of analyzing and troubleshooting apps at a low level  
+- Exploring **AI-assisted development**, including code generation and intelligent testing  
 
-### 我的经历
-- 曾参与多个 **ERP 企业系统开发**，熟悉业务流程与复杂架构设计  
-- 在广告系统领域有多年经验，擅长 SDK 和大规模系统架构  
-- 深入 Android 反编译与底层源码研究，能够快速定位和解决问题  
-- 熟悉 AI 编程及大模型应用，正在尝试将 AI 与开发流程结合  
+### Skills
+- **Android**: Kotlin / Java / Gradle / AOSP source code  
+- **Backend**: Java / Spring Boot / Databases  
+- **AI Development**: Large language models, automation, and AI-driven tools  
+- **Tools**: Git / GitHub / Jenkins / Docker / Hugo  
 
-### 我的技能
-- **Android**：Kotlin / Java / Gradle / AOSP 源码  
-- **后端**：Java / Spring Boot / 数据库  
-- **AI 编程**：大模型调用、代码自动生成、智能测试  
-- **工具**：Git / GitHub / Jenkins / Docker   
-
-### 兴趣与目标
-- 记录技术与生活，分享开发经验与思考  
-- 探索 AI 在开发中的应用，提升编程效率  
-- 长期打造个人技术博客与知识库  
+### Interests & Goals
+- Share knowledge and insights about technology and development  
+- Explore practical AI applications to improve programming efficiency  
+- Build a professional personal blog and technical knowledge base  
