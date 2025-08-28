@@ -1,9 +1,64 @@
 <!DOCTYPE html>
 <html lang="en" dir="auto">
 
-<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
-<script async defer data-website-id="70beee45-da0f-44e1-8b5b-0233aec057dd" src="https://cloud.umami.is/script.js"></script>
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="noindex, nofollow">
+<title>RetrofitCache 源码分析 | Steven&#39;s Blog</title>
+<meta name="keywords" content="源码解读, Android">
+<meta name="description" content="最近工作项目里添加网络缓存时看了这个项目,内容不多,有些方法可取便记录下来
+原理
+RetrofitCache 使用的方式是okhttp原有的cache机制,然后它提供了标签的方式,在Retrofit上简单实现,减少代码入侵,这是这个库的价值.
 
+添加拦截器
+okhttp3.OkHttpClient.Builder clientBuilder=new okhttp3.OkHttpClient.Builder();
+...
+clientBuilder.addInterceptor(new CacheForceInterceptorNoNet());
+clientBuilder.addNetworkInterceptor(new CacheInterceptorOnNet());
+...
+首先复习okhttp 的 addInterceptor 和 addNetworkInterceptor 的区别
+
+addInterceptor是添加在与服务器连接之前和之后
+addNetworkInterceptor是添加在与服务器建立连接和发起请求的之间
+具体参考 Retrofit2 &#43; OkHttp3 配置及Interceptor原理
+CacheInterceptorOnNet
+CacheInterceptorOnNet是添加在与服务器建立连接和发起请求的之间
+获取 maxAge 缓存时间
+当需要缓存时
+ return   response.newBuilder()
+                .removeHeader(&#34;Cache-Control&#34;)
+                .header(&#34;Cache-Control&#34;, &#34;public,max-age=&#34;&#43;maxAge)
+                .removeHeader(&#34;Pragma&#34;)
+                .build();
+通过header里面添加 public,max-age=maxAge来缓存,而缓存的实现由 okhttp 里面实现
+CacheForceInterceptorNoNet
+CacheForceInterceptorNoNet类是处理服务器连接之前和之后
+功能同理,唯一不同的是在请求之前增加了是否网络连接状态的判断
+ boolean forceCacheNoNet =  RetrofitCache.getInstance().getCacheTime(url).isForceCacheNoNet();
+        if (forceCacheNoNet&amp;&amp;!NetUtils.isConnectNet(RetrofitCache.getInstance().getContext())){
+            request = request.newBuilder()
+                    .cacheControl(CacheControl.FORCE_CACHE)
+                    .build();
+        }
+当没有网络的情况下,通过调用okhttp的Cache-Control来改变状态
+具体参考 Android Okhttp网络请求之缓存控制Cache-Control
+BaseInterceptor
+在bese类里,一个核心的方法是mockResponse,获取在Api里通过标签添加的模拟数据和Asset获取的模拟数据.
+而Mock类就是模拟数据的抽象类,而通过RetrofitCache.getInstance().getMockObject(url)获取
+使用Java Annotation注解的方式添加
+具体参考 Java Annotation认知(包括框架图、详细介绍、示例说明)">
+<meta name="author" content="Steven">
+<link rel="canonical" href="http://localhost:1313/posts/retrofitcache-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.8fe10233a706bc87f2e08b3cf97b8bd4c0a80f10675a143675d59212121037c0.css" integrity="sha256-j&#43;ECM6cGvIfy4Is8&#43;XuL1MCoDxBnWhQ2ddWSEhIQN8A=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<script async defer data-website-id="70beee45-da0f-44e1-8b5b-0233aec057dd" src="https://cloud.umami.is/script.js"></script>
 </head>
 
 <body class="" id="top">
