@@ -98,6 +98,9 @@
 <meta name="theme-color" content="{{ site.Params.assets.theme_color | default "#2e2e33" }}">
 <meta name="msapplication-TileColor" content="{{ site.Params.assets.msapplication_TileColor | default "#2e2e33" }}">
 
+{{- /* SEO Meta Tags */}}
+{{- partial "seo-head.html" . -}}
+
 {{- /* Umami Analytics */}}
 {{- if .Site.Params.umami.enable }}
 <script async defer data-website-id="{{ .Site.Params.umami.website_id }}" src="{{ .Site.Params.umami.src_url }}"></script>

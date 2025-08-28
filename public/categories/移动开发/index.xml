@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>移动开发 on Steven&#39;s Blog</title>
-    <link>http://localhost:57794/categories/%E7%A7%BB%E5%8A%A8%E5%BC%80%E5%8F%91/</link>
+    <link>http://localhost:1313/categories/%E7%A7%BB%E5%8A%A8%E5%BC%80%E5%8F%91/</link>
     <description>Recent content in 移动开发 on Steven&#39;s Blog</description>
     <generator>Hugo -- 0.149.0</generator>
     <language>zh-CN</language>
     <lastBuildDate>Thu, 07 Jun 2018 11:55:33 +0000</lastBuildDate>
-    <atom:link href="http://localhost:57794/categories/%E7%A7%BB%E5%8A%A8%E5%BC%80%E5%8F%91/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://localhost:1313/categories/%E7%A7%BB%E5%8A%A8%E5%BC%80%E5%8F%91/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Android install apk 兼容至 Android 8</title>
-      <link>http://localhost:57794/posts/android-install-apk-%E5%85%BC%E5%AE%B9%E8%87%B3-android-8/</link>
+      <link>http://localhost:1313/posts/android-install-apk-%E5%85%BC%E5%AE%B9%E8%87%B3-android-8/</link>
       <pubDate>Thu, 07 Jun 2018 11:55:33 +0000</pubDate>
-      <guid>http://localhost:57794/posts/android-install-apk-%E5%85%BC%E5%AE%B9%E8%87%B3-android-8/</guid>
+      <guid>http://localhost:1313/posts/android-install-apk-%E5%85%BC%E5%AE%B9%E8%87%B3-android-8/</guid>
       <description>&lt;h2 id=&#34;前言&#34;&gt;前言&lt;/h2&gt;
 &lt;p&gt;以往安装apk都是很简单的方法, Intent 里添加apk的文件就可以调用系统安装界面.后来随着谷歌对安全的重视,从Android 7开始以往的方式都不能用,然而到Android 8 又有改动,相信随着Android 的发展,以后的版本也会有改动,崇尚模块化开发的我便希望每一个细小的功能,颗粒度最少的功能都可以由一个模块来负责,然后每个项目需要这个功能时调用这个模块即可,而这个模块只需要维护好自己的兼容性问题便解决所有项目的兼容性问题.&lt;/p&gt;
 &lt;p&gt;本文思路是提供一个笔者暂时觉得最优的方案,然后原理分析提供每个Android 版本的安装的原理思路&lt;/p&gt;
@@ -38,9 +38,9 @@
     </item>
     <item>
       <title>RetrofitCache 源码分析</title>
-      <link>http://localhost:57794/posts/retrofitcache-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</link>
+      <link>http://localhost:1313/posts/retrofitcache-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</link>
       <pubDate>Tue, 22 May 2018 15:43:33 +0000</pubDate>
-      <guid>http://localhost:57794/posts/retrofitcache-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</guid>
+      <guid>http://localhost:1313/posts/retrofitcache-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</guid>
       <description>&lt;p&gt;最近工作项目里添加网络缓存时看了这个项目,内容不多,有些方法可取便记录下来&lt;/p&gt;
 &lt;h2 id=&#34;原理&#34;&gt;原理&lt;/h2&gt;
 &lt;p&gt;&lt;a href=&#34;https://github.com/yale8848/RetrofitCache&#34;&gt;RetrofitCache&lt;/a&gt; 使用的方式是okhttp原有的cache机制,然后它提供了标签的方式,在Retrofit上简单实现,减少代码入侵,这是这个库的价值.&lt;/p&gt;
@@ -52,8 +52,7 @@ clientBuilder.addInterceptor(new CacheForceInterceptorNoNet());
 clientBuilder.addNetworkInterceptor(new CacheInterceptorOnNet());
 ...
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;首先复习okhttp 的 addInterceptor 和 addNetworkInterceptor 的区别&lt;/p&gt;
-&lt;p&gt;&lt;img alt=&#34;image.png&#34; loading=&#34;lazy&#34; src=&#34;http://localhost:57794/posts/retrofitcache-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image_01.webp&#34;&gt;&lt;/p&gt;
-&lt;p&gt;addInterceptor是添加在与服务器连接之前和之后
+&lt;img alt=&#34;image.png&#34; loading=&#34;lazy&#34; src=&#34;http://localhost:1313/posts/retrofitcache-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/image_01.webp&#34;&gt;&lt;p&gt;addInterceptor是添加在与服务器连接之前和之后
 addNetworkInterceptor是添加在与服务器建立连接和发起请求的之间&lt;/p&gt;
 &lt;p&gt;具体参考 &lt;a href=&#34;http://www.idtkm.com/2017/10/26/Retrofit2%20&amp;amp;%20OkHttp3%20Interceptor/&#34;&gt;Retrofit2 + OkHttp3 配置及Interceptor原理&lt;/a&gt;&lt;/p&gt;
 &lt;h4 id=&#34;cacheinterceptoronnet&#34;&gt;CacheInterceptorOnNet&lt;/h4&gt;
@@ -81,13 +80,15 @@ addNetworkInterceptor是添加在与服务器建立连接和发起请求的之�
 &lt;p&gt;在bese类里,一个核心的方法是mockResponse,获取在Api里通过标签添加的模拟数据和Asset获取的模拟数据.&lt;/p&gt;
 &lt;p&gt;而Mock类就是模拟数据的抽象类,而通过RetrofitCache.getInstance().getMockObject(url)获取
 使用Java Annotation注解的方式添加&lt;/p&gt;
-&lt;p&gt;具体参考 &lt;a href=&#34;https://www.cnblogs.com/skywang12345/p/3344137.html&#34;&gt;Java Annotation认知(包括框架图、详细介绍、示例说明)&lt;/a&gt;&lt;/p&gt;</description>
+&lt;p&gt;具体参考 &lt;a href=&#34;https://www.cnblogs.com/skywang12345/p/3344137.html&#34;&gt;Java Annotation认知(包括框架图、详细介绍、示例说明)&lt;/a&gt;&lt;/p&gt;
+&lt;h3 id=&#34;总结&#34;&gt;总结&lt;/h3&gt;
+&lt;p&gt;这个第三库的本质是使用的okhttp的缓存机制,使用Java Annotation的方法灵活在API里添加注解,以往项目的注解的使用并不多,可以多用这方式提高代码的简洁性,而okhttp的源码也是不熟悉,之后可以详细研究okhttp的源码.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Android Gesture 手势研究</title>
-      <link>http://localhost:57794/posts/android-gesture-%E6%89%8B%E5%8A%BF%E7%A0%94%E7%A9%B6/</link>
+      <link>http://localhost:1313/posts/android-gesture-%E6%89%8B%E5%8A%BF%E7%A0%94%E7%A9%B6/</link>
       <pubDate>Fri, 05 May 2017 13:15:33 +0000</pubDate>
-      <guid>http://localhost:57794/posts/android-gesture-%E6%89%8B%E5%8A%BF%E7%A0%94%E7%A9%B6/</guid>
+      <guid>http://localhost:1313/posts/android-gesture-%E6%89%8B%E5%8A%BF%E7%A0%94%E7%A9%B6/</guid>
       <description>&lt;p&gt;怎么理解一个手势,就是在屏幕上,手画一个符号就是一个手势,它代表了用户的一个意图,也就是用户希望程序做点什么,一般程序大多数是通过按钮,按钮上有对应的文字,这样进行人机交互,而手势也是很多地方会使用到,而常用的手势好像下拉刷新,用户希望列表内容下拉一下就有新的信息,双指缩放等等,一般这些手势都是跟对应的view绑定起来,而今天介绍的都是方法是可以不绑定view,直接在界面上画一个手势就可以人机交互.实现的代码可以在&lt;a href=&#34;https://github.com/steven2947/gestureDemo&#34;&gt;github上的Demo源码&lt;/a&gt;了解.&lt;/p&gt;
 &lt;p&gt;这篇手势研究会大概分三部分&lt;/p&gt;
 &lt;ol&gt;
@@ -158,8 +159,7 @@ score越高代表越匹配.
 &lt;hr&gt;
 &lt;h3 id=&#34;手势的使用&#34;&gt;手势的使用&lt;/h3&gt;
 &lt;p&gt;使用手势的过程都是先从GestureLibrary开始,那么看看GestureLibrary的关系图.&lt;/p&gt;
-&lt;p&gt;&lt;img alt=&#34;14937957345949.jpg&#34; loading=&#34;lazy&#34; src=&#34;http://localhost:57794/posts/android-gesture-%E6%89%8B%E5%8A%BF%E7%A0%94%E7%A9%B6/image_01.webp&#34;&gt;&lt;/p&gt;
-&lt;p&gt;从图中看,GestureLibrary的实现有两种,一个File的实现,另外一个是由资源Resource实现,说明我们的手势库可有两个方向可以构造.&lt;/p&gt;
+&lt;img alt=&#34;14937957345949.jpg&#34; loading=&#34;lazy&#34; src=&#34;http://localhost:1313/posts/android-gesture-%E6%89%8B%E5%8A%BF%E7%A0%94%E7%A9%B6/image_01.webp&#34;&gt;&lt;p&gt;从图中看,GestureLibrary的实现有两种,一个File的实现,另外一个是由资源Resource实现,说明我们的手势库可有两个方向可以构造.&lt;/p&gt;
 &lt;p&gt;然后看回GestureLibrary的源码&lt;/p&gt;
 &lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;public abstract class GestureLibrary {
      protected final GestureStore mStore;

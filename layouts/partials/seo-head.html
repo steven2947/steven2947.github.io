@@ -1,0 +1,124 @@
+{{- /* SEO Meta Tags */ -}}
+{{- if .IsHome -}}
+  {{- /* 首页 SEO */ -}}
+  <meta name="description" content="{{ site.Params.description }}">
+  <meta name="keywords" content="{{ delimit site.Params.keywords ", " }}">
+  <meta name="author" content="{{ site.Params.author }}">
+  
+  {{- /* Open Graph */ -}}
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="{{ site.Title }}">
+  <meta property="og:description" content="{{ site.Params.description }}">
+  <meta property="og:url" content="{{ .Permalink }}">
+  <meta property="og:site_name" content="{{ site.Title }}">
+  {{- if site.Params.openGraph.image -}}
+  <meta property="og:image" content="{{ site.Params.openGraph.image | absURL }}">
+  <meta property="og:image:width" content="{{ site.Params.openGraph.imageWidth }}">
+  <meta property="og:image:height" content="{{ site.Params.openGraph.imageHeight }}">
+  {{- end -}}
+  
+  {{- /* Twitter Card */ -}}
+  <meta name="twitter:card" content="{{ site.Params.twitterCard.card }}">
+  <meta name="twitter:title" content="{{ site.Title }}">
+  <meta name="twitter:description" content="{{ site.Params.description }}">
+  {{- if site.Params.twitterCard.site -}}
+  <meta name="twitter:site" content="{{ site.Params.twitterCard.site }}">
+  {{- end -}}
+  
+{{- else -}}
+  {{- /* 文章页面 SEO */ -}}
+  {{- $description := .Description | default (.Summary | default site.Params.description) -}}
+  {{- $keywords := .Params.keywords | default .Params.tags | default site.Params.keywords -}}
+  
+  <meta name="description" content="{{ $description }}">
+  <meta name="keywords" content="{{ delimit $keywords ", " }}">
+  <meta name="author" content="{{ .Params.author | default site.Params.author }}">
+  
+  {{- /* Open Graph */ -}}
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="{{ .Title }}">
+  <meta property="og:description" content="{{ $description }}">
+  <meta property="og:url" content="{{ .Permalink }}">
+  <meta property="og:site_name" content="{{ site.Title }}">
+  <meta property="article:published_time" content="{{ .Date.Format "2006-01-02T15:04:05Z07:00" }}">
+  {{- if .Params.tags -}}
+  {{- range .Params.tags -}}
+  <meta property="article:tag" content="{{ . }}">
+  {{- end -}}
+  {{- end -}}
+  {{- if .Params.categories -}}
+  {{- range .Params.categories -}}
+  <meta property="article:section" content="{{ . }}">
+  {{- end -}}
+  {{- end -}}
+  
+  {{- /* 文章特色图片 */ -}}
+  {{- if .Params.image -}}
+  <meta property="og:image" content="{{ .Params.image | absURL }}">
+  {{- else if site.Params.openGraph.image -}}
+  <meta property="og:image" content="{{ site.Params.openGraph.image | absURL }}">
+  {{- end -}}
+  
+  {{- /* Twitter Card */ -}}
+  <meta name="twitter:card" content="{{ site.Params.twitterCard.card }}">
+  <meta name="twitter:title" content="{{ .Title }}">
+  <meta name="twitter:description" content="{{ $description }}">
+  {{- if site.Params.twitterCard.site -}}
+  <meta name="twitter:site" content="{{ site.Params.twitterCard.site }}">
+  {{- end -}}
+  
+{{- end -}}
+
+{{- /* 结构化数据 */ -}}
+{{- if site.Params.structuredData.enable -}}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "{{ site.Params.structuredData.type }}",
+  "name": "{{ if .IsHome }}{{ site.Title }}{{ else }}{{ .Title }}{{ end }}",
+  "description": "{{ if .IsHome }}{{ site.Params.description }}{{ else }}{{ .Description | default .Summary | default site.Params.description }}{{ end }}",
+  "url": "{{ .Permalink }}",
+  "publisher": {
+    "@type": "Organization",
+    "name": "{{ site.Params.structuredData.publisher }}",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "{{ site.Params.structuredData.publisherLogo | absURL }}"
+    }
+  }
+  {{- if not .IsHome -}}
+  ,"datePublished": "{{ .Date.Format "2006-01-02T15:04:05Z07:00" }}"
+  {{- if .Params.tags -}}
+  ,"keywords": "{{ delimit .Params.tags ", " }}"
+  {{- end -}}
+  {{- if .Params.categories -}}
+  ,"articleSection": "{{ delimit .Params.categories ", " }}"
+  {{- end -}}
+  {{- end -}}
+}
+</script>
+{{- end -}}
+
+{{- /* 百度统计 */ -}}
+{{- if site.Params.analytics.baidu -}}
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?{{ site.Params.analytics.baidu }}";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+{{- end -}}
+
+{{- /* Google Analytics 4 */ -}}
+{{- if site.Params.analytics.google -}}
+<script async src="https://www.googletagmanager.com/gtag/js?id={{ site.Params.analytics.google }}"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', '{{ site.Params.analytics.google }}');
+</script>
+{{- end -}}

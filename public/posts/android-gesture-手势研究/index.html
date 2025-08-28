@@ -77,7 +77,6 @@ GestureStore 手势仓库,里面存储了多个手势样本
 
 手势的使用
 使用手势的过程都是先从GestureLibrary开始,那么看看GestureLibrary的关系图.
-
 从图中看,GestureLibrary的实现有两种,一个File的实现,另外一个是由资源Resource实现,说明我们的手势库可有两个方向可以构造.
 然后看回GestureLibrary的源码
 public abstract class GestureLibrary {
@@ -94,7 +93,259 @@ public abstract class GestureLibrary {
 <link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
 <link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
-<meta name="msapplication-TileColor" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33"><meta name="description" content="怎么理解一个手势,就是在屏幕上,手画一个符号就是一个手势,它代表了用户的一个意图,也就是用户希望程序做点什么,一般程序大多数是通过按钮,按钮上有对应的文字,这样进行人机交互,而手势也是很多地方会使用到,而常用的手势好像下拉刷新,用户希望列表内容下拉一下就有新的信息,双指缩放等等,一般这些手势都是跟对应的view绑定起来,而今天介绍的都是方法是可以不绑定view,直接在界面上画一个手势就可以人机交互.实现的代码可以在github上的Demo源码了解.
+这篇手势研究会大概分三部分
+
+手势Gesture使用方式
+展示手势开发的步骤及代码实现
+分析Gesture的源码及原理
+
+
+
+使用的方式
+首先我们需要把用户需要使用到的手势提前记录下来,准备一些手势的样本,在app安装时随着资源文件或者下载等方式存储到用户的手机里,当用户在app画一个手势时,就去匹配手势样本,当时样本最吻合时,就知道用户的意图,采取执行对应的功能,这样就是个很好的人机交互的方式.
+从上文使用方式,我们大概猜想到,我们需要一个东西,用来管理和读取我们已经存储的手势样本,我们还要需要这个东西可以设别用户的手势跟我们已经存储的手势进行匹配.还有,我们需一个东西在app的界面上记录用户的手势,没错,两个东西都存在,就是GestureLibrary和GestureOverlayView,这两个类就是手势开发里使用的主要两个类,通过这两个类,我们就可以实现手势开发的所有功能,是不是很简单.
+总结一下:
+
+
+提前准备好手势样本,在安装时加入到资源文件或者安装后网络下载.
+
+
+
+需要使用手势的界面里使用GestureOverlayView记录用户的手势,
+
+
+
+使用GestureLibrary对象对用户的手势进行监听和匹配,找到用户手势的意图,执行对应的功能
+
+
+
+
+步骤及代码实现
+
+
+手势库的初始化
+GestureLibrary gLib=GestureLibraries.fromFile(手势库文件); gLib.load(); 
+这个过程是读取已经存储手势样本文件,构造出GestureLibrary实例的过程,需要第一步实现.
+
+
+对用户手势的监听
+GestureOverlayView.addOnGesturePerformedListener() 
+
+
+使用GestureLibrary对用户的手势进行匹配
+recognize(Gesture gesture)
+
+
+循环遍历返回的ArrayList对象，使用Prediction的score来匹配手势的相似度，
+score越高代表越匹配.
+Prediction.score()
+
+
+这里就是手势开发的实现的全部内容,但是作为一个程序猿,需要知其然知其所以然,就要对源码进行解剖.
+
+原理
+手势的结构
+手势是用户在屏幕上画的符号,那么手势可以简单的一笔笔画,例如一个方向的箭头(&gt;),也可以多笔划,很复杂,例如一个文字.这些都手势,所以我们就知道
+
+手势是由一个或者多个笔画组成
+学过数学的我们都到线是由点组成的,所以
+
+一个手势笔画是由多个时间连续的点组成
+一个点意味着什么呢,它会固定在屏幕的某个地方,还需要时间连续不断,所以
+
+手势中的点包含坐标X轴和Y轴,还有时间戳
+所以我们就很容易了解手势对应的文件了
+GesturePoint : 是手势笔划中的一个点,包含X轴,Y轴的坐标,还有时间戳.
+GestureStroke : 手势笔划,可以理解为线,由多个点组成的.
+Gesture : 手势,代表用户的一个手势,可以由一个或者多个手势笔划组成.
+GestureStore 手势仓库,里面存储了多个手势样本
+
+手势的使用
+使用手势的过程都是先从GestureLibrary开始,那么看看GestureLibrary的关系图.
+从图中看,GestureLibrary的实现有两种,一个File的实现,另外一个是由资源Resource实现,说明我们的手势库可有两个方向可以构造.
+然后看回GestureLibrary的源码
+public abstract class GestureLibrary {
+     protected final GestureStore mStore;
+     ...
+}
+里面只有一个对象,而所有的方法都是由这个对象实现,也就是GestureLibrary其实是GestureStore的代理类,而真正的功能其实是在GestureStore里.">
+  <meta name="keywords" content="源码解读, Android">
+  <meta name="author" content="Steven"><meta property="og:type" content="article">
+  <meta property="og:title" content="Android Gesture 手势研究">
+  <meta property="og:description" content="怎么理解一个手势,就是在屏幕上,手画一个符号就是一个手势,它代表了用户的一个意图,也就是用户希望程序做点什么,一般程序大多数是通过按钮,按钮上有对应的文字,这样进行人机交互,而手势也是很多地方会使用到,而常用的手势好像下拉刷新,用户希望列表内容下拉一下就有新的信息,双指缩放等等,一般这些手势都是跟对应的view绑定起来,而今天介绍的都是方法是可以不绑定view,直接在界面上画一个手势就可以人机交互.实现的代码可以在github上的Demo源码了解.
+这篇手势研究会大概分三部分
+
+手势Gesture使用方式
+展示手势开发的步骤及代码实现
+分析Gesture的源码及原理
+
+
+
+使用的方式
+首先我们需要把用户需要使用到的手势提前记录下来,准备一些手势的样本,在app安装时随着资源文件或者下载等方式存储到用户的手机里,当用户在app画一个手势时,就去匹配手势样本,当时样本最吻合时,就知道用户的意图,采取执行对应的功能,这样就是个很好的人机交互的方式.
+从上文使用方式,我们大概猜想到,我们需要一个东西,用来管理和读取我们已经存储的手势样本,我们还要需要这个东西可以设别用户的手势跟我们已经存储的手势进行匹配.还有,我们需一个东西在app的界面上记录用户的手势,没错,两个东西都存在,就是GestureLibrary和GestureOverlayView,这两个类就是手势开发里使用的主要两个类,通过这两个类,我们就可以实现手势开发的所有功能,是不是很简单.
+总结一下:
+
+
+提前准备好手势样本,在安装时加入到资源文件或者安装后网络下载.
+
+
+
+需要使用手势的界面里使用GestureOverlayView记录用户的手势,
+
+
+
+使用GestureLibrary对象对用户的手势进行监听和匹配,找到用户手势的意图,执行对应的功能
+
+
+
+
+步骤及代码实现
+
+
+手势库的初始化
+GestureLibrary gLib=GestureLibraries.fromFile(手势库文件); gLib.load(); 
+这个过程是读取已经存储手势样本文件,构造出GestureLibrary实例的过程,需要第一步实现.
+
+
+对用户手势的监听
+GestureOverlayView.addOnGesturePerformedListener() 
+
+
+使用GestureLibrary对用户的手势进行匹配
+recognize(Gesture gesture)
+
+
+循环遍历返回的ArrayList对象，使用Prediction的score来匹配手势的相似度，
+score越高代表越匹配.
+Prediction.score()
+
+
+这里就是手势开发的实现的全部内容,但是作为一个程序猿,需要知其然知其所以然,就要对源码进行解剖.
+
+原理
+手势的结构
+手势是用户在屏幕上画的符号,那么手势可以简单的一笔笔画,例如一个方向的箭头(&gt;),也可以多笔划,很复杂,例如一个文字.这些都手势,所以我们就知道
+
+手势是由一个或者多个笔画组成
+学过数学的我们都到线是由点组成的,所以
+
+一个手势笔画是由多个时间连续的点组成
+一个点意味着什么呢,它会固定在屏幕的某个地方,还需要时间连续不断,所以
+
+手势中的点包含坐标X轴和Y轴,还有时间戳
+所以我们就很容易了解手势对应的文件了
+GesturePoint : 是手势笔划中的一个点,包含X轴,Y轴的坐标,还有时间戳.
+GestureStroke : 手势笔划,可以理解为线,由多个点组成的.
+Gesture : 手势,代表用户的一个手势,可以由一个或者多个手势笔划组成.
+GestureStore 手势仓库,里面存储了多个手势样本
+
+手势的使用
+使用手势的过程都是先从GestureLibrary开始,那么看看GestureLibrary的关系图.
+从图中看,GestureLibrary的实现有两种,一个File的实现,另外一个是由资源Resource实现,说明我们的手势库可有两个方向可以构造.
+然后看回GestureLibrary的源码
+public abstract class GestureLibrary {
+     protected final GestureStore mStore;
+     ...
+}
+里面只有一个对象,而所有的方法都是由这个对象实现,也就是GestureLibrary其实是GestureStore的代理类,而真正的功能其实是在GestureStore里.">
+  <meta property="og:url" content="http://localhost:1313/posts/android-gesture-%E6%89%8B%E5%8A%BF%E7%A0%94%E7%A9%B6/">
+  <meta property="og:site_name" content="Steven&#39;s Blog">
+  <meta property="article:published_time" content="2017-05-05T13:15:33Z"><meta property="article:tag" content="源码解读"><meta property="article:tag" content="Android"><meta property="article:section" content="移动开发"><meta property="og:image" content="http://localhost:1313/img/og-image.jpg"><meta name="twitter:card" content="">
+  <meta name="twitter:title" content="Android Gesture 手势研究">
+  <meta name="twitter:description" content="怎么理解一个手势,就是在屏幕上,手画一个符号就是一个手势,它代表了用户的一个意图,也就是用户希望程序做点什么,一般程序大多数是通过按钮,按钮上有对应的文字,这样进行人机交互,而手势也是很多地方会使用到,而常用的手势好像下拉刷新,用户希望列表内容下拉一下就有新的信息,双指缩放等等,一般这些手势都是跟对应的view绑定起来,而今天介绍的都是方法是可以不绑定view,直接在界面上画一个手势就可以人机交互.实现的代码可以在github上的Demo源码了解.
+这篇手势研究会大概分三部分
+
+手势Gesture使用方式
+展示手势开发的步骤及代码实现
+分析Gesture的源码及原理
+
+
+
+使用的方式
+首先我们需要把用户需要使用到的手势提前记录下来,准备一些手势的样本,在app安装时随着资源文件或者下载等方式存储到用户的手机里,当用户在app画一个手势时,就去匹配手势样本,当时样本最吻合时,就知道用户的意图,采取执行对应的功能,这样就是个很好的人机交互的方式.
+从上文使用方式,我们大概猜想到,我们需要一个东西,用来管理和读取我们已经存储的手势样本,我们还要需要这个东西可以设别用户的手势跟我们已经存储的手势进行匹配.还有,我们需一个东西在app的界面上记录用户的手势,没错,两个东西都存在,就是GestureLibrary和GestureOverlayView,这两个类就是手势开发里使用的主要两个类,通过这两个类,我们就可以实现手势开发的所有功能,是不是很简单.
+总结一下:
+
+
+提前准备好手势样本,在安装时加入到资源文件或者安装后网络下载.
+
+
+
+需要使用手势的界面里使用GestureOverlayView记录用户的手势,
+
+
+
+使用GestureLibrary对象对用户的手势进行监听和匹配,找到用户手势的意图,执行对应的功能
+
+
+
+
+步骤及代码实现
+
+
+手势库的初始化
+GestureLibrary gLib=GestureLibraries.fromFile(手势库文件); gLib.load(); 
+这个过程是读取已经存储手势样本文件,构造出GestureLibrary实例的过程,需要第一步实现.
+
+
+对用户手势的监听
+GestureOverlayView.addOnGesturePerformedListener() 
+
+
+使用GestureLibrary对用户的手势进行匹配
+recognize(Gesture gesture)
+
+
+循环遍历返回的ArrayList对象，使用Prediction的score来匹配手势的相似度，
+score越高代表越匹配.
+Prediction.score()
+
+
+这里就是手势开发的实现的全部内容,但是作为一个程序猿,需要知其然知其所以然,就要对源码进行解剖.
+
+原理
+手势的结构
+手势是用户在屏幕上画的符号,那么手势可以简单的一笔笔画,例如一个方向的箭头(&gt;),也可以多笔划,很复杂,例如一个文字.这些都手势,所以我们就知道
+
+手势是由一个或者多个笔画组成
+学过数学的我们都到线是由点组成的,所以
+
+一个手势笔画是由多个时间连续的点组成
+一个点意味着什么呢,它会固定在屏幕的某个地方,还需要时间连续不断,所以
+
+手势中的点包含坐标X轴和Y轴,还有时间戳
+所以我们就很容易了解手势对应的文件了
+GesturePoint : 是手势笔划中的一个点,包含X轴,Y轴的坐标,还有时间戳.
+GestureStroke : 手势笔划,可以理解为线,由多个点组成的.
+Gesture : 手势,代表用户的一个手势,可以由一个或者多个手势笔划组成.
+GestureStore 手势仓库,里面存储了多个手势样本
+
+手势的使用
+使用手势的过程都是先从GestureLibrary开始,那么看看GestureLibrary的关系图.
+从图中看,GestureLibrary的实现有两种,一个File的实现,另外一个是由资源Resource实现,说明我们的手势库可有两个方向可以构造.
+然后看回GestureLibrary的源码
+public abstract class GestureLibrary {
+     protected final GestureStore mStore;
+     ...
+}
+里面只有一个对象,而所有的方法都是由这个对象实现,也就是GestureLibrary其实是GestureStore的代理类,而真正的功能其实是在GestureStore里."><script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Blog",
+  "name": "Android Gesture 手势研究",
+  "description": "\u003cp\u003e怎么理解一个手势,就是在屏幕上,手画一个符号就是一个手势,它代表了用户的一个意图,也就是用户希望程序做点什么,一般程序大多数是通过按钮,按钮上有对应的文字,这样进行人机交互,而手势也是很多地方会使用到,而常用的手势好像下拉刷新,用户希望列表内容下拉一下就有新的信息,双指缩放等等,一般这些手势都是跟对应的view绑定起来,而今天介绍的都是方法是可以不绑定view,直接在界面上画一个手势就可以人机交互.实现的代码可以在\u003ca href=\u0022https:\/\/github.com\/steven2947\/gestureDemo\u0022\u003egithub上的Demo源码\u003c\/a\u003e了解.\u003c\/p\u003e\n\u003cp\u003e这篇手势研究会大概分三部分\u003c\/p\u003e\n\u003col\u003e\n\u003cli\u003e手势Gesture使用方式\u003c\/li\u003e\n\u003cli\u003e展示手势开发的步骤及代码实现\u003c\/li\u003e\n\u003cli\u003e分析Gesture的源码及原理\u003c\/li\u003e\n\u003c\/ol\u003e\n\u003chr\u003e\n\u003c!-- more --\u003e\n\u003ch2 id=\u0022使用的方式\u0022\u003e使用的方式\u003c\/h2\u003e\n\u003cp\u003e首先我们需要把用户需要使用到的手势提前记录下来,准备一些手势的样本,在app安装时随着资源文件或者下载等方式存储到用户的手机里,当用户在app画一个手势时,就去匹配手势样本,当时样本最吻合时,就知道用户的意图,采取执行对应的功能,这样就是个很好的人机交互的方式.\u003c\/p\u003e\n\u003cp\u003e从上文使用方式,我们大概猜想到,我们需要一个东西,用来管理和读取我们已经存储的手势样本,我们还要需要这个东西可以设别用户的手势跟我们已经存储的手势进行匹配.还有,我们需一个东西在app的界面上记录用户的手势,没错,两个东西都存在,就是GestureLibrary和GestureOverlayView,这两个类就是手势开发里使用的主要两个类,通过这两个类,我们就可以实现手势开发的所有功能,是不是很简单.\u003c\/p\u003e\n\u003cp\u003e总结一下:\u003c\/p\u003e\n\u003col\u003e\n\u003cli\u003e\n\u003cpre\u003e\u003ccode\u003e提前准备好手势样本,在安装时加入到资源文件或者安装后网络下载.\n\u003c\/code\u003e\u003c\/pre\u003e\n\u003c\/li\u003e\n\u003cli\u003e\n\u003cpre\u003e\u003ccode\u003e需要使用手势的界面里使用GestureOverlayView记录用户的手势,\n\u003c\/code\u003e\u003c\/pre\u003e\n\u003c\/li\u003e\n\u003cli\u003e\n\u003cpre\u003e\u003ccode\u003e使用GestureLibrary对象对用户的手势进行监听和匹配,找到用户手势的意图,执行对应的功能\n\u003c\/code\u003e\u003c\/pre\u003e\n\u003c\/li\u003e\n\u003c\/ol\u003e\n\u003chr\u003e\n\u003ch2 id=\u0022步骤及代码实现\u0022\u003e步骤及代码实现\u003c\/h2\u003e\n\u003col\u003e\n\u003cli\u003e\n\u003cp\u003e手势库的初始化\n\u003ccode\u003eGestureLibrary gLib=GestureLibraries.fromFile(手势库文件); gLib.load(); \u003c\/code\u003e\n这个过程是读取已经存储手势样本文件,构造出GestureLibrary实例的过程,需要第一步实现.\u003c\/p\u003e\n\u003c\/li\u003e\n\u003cli\u003e\n\u003cp\u003e对用户手势的监听\n\u003ccode\u003eGestureOverlayView.addOnGesturePerformedListener() \u003c\/code\u003e\u003c\/p\u003e\n\u003c\/li\u003e\n\u003cli\u003e\n\u003cp\u003e使用GestureLibrary对用户的手势进行匹配\n\u003ccode\u003erecognize(Gesture gesture)\u003c\/code\u003e\u003c\/p\u003e\n\u003c\/li\u003e\n\u003cli\u003e\n\u003cp\u003e循环遍历返回的ArrayList\u003cPrediction\u003e对象，使用Prediction的score来匹配手势的相似度，\nscore越高代表越匹配.\n\u003ccode\u003ePrediction.score()\u003c\/code\u003e\u003c\/p\u003e\n\u003c\/li\u003e\n\u003c\/ol\u003e\n\u003cp\u003e这里就是手势开发的实现的全部内容,但是作为一个程序猿,需要知其然知其所以然,就要对源码进行解剖.\u003c\/p\u003e\n\u003chr\u003e\n\u003ch2 id=\u0022原理\u0022\u003e原理\u003c\/h2\u003e\n\u003ch3 id=\u0022手势的结构\u0022\u003e手势的结构\u003c\/h3\u003e\n\u003cp\u003e手势是用户在屏幕上画的符号,那么手势可以简单的一笔笔画,例如一个方向的箭头(\u0026gt;),也可以多笔划,很复杂,例如一个文字.这些都手势,所以我们就知道\u003c\/p\u003e\n\u003cblockquote\u003e\n\u003cp\u003e手势是由一个或者多个笔画组成\u003c\/p\u003e\u003c\/blockquote\u003e\n\u003cp\u003e学过数学的我们都到线是由点组成的,所以\u003c\/p\u003e\n\u003cblockquote\u003e\n\u003cp\u003e一个手势笔画是由多个时间连续的点组成\u003c\/p\u003e\u003c\/blockquote\u003e\n\u003cp\u003e一个点意味着什么呢,它会固定在屏幕的某个地方,还需要时间连续不断,所以\u003c\/p\u003e\n\u003cblockquote\u003e\n\u003cp\u003e手势中的点包含坐标X轴和Y轴,还有时间戳\u003c\/p\u003e\u003c\/blockquote\u003e\n\u003cp\u003e所以我们就很容易了解手势对应的文件了\u003c\/p\u003e\n\u003cp\u003e\u003cstrong\u003eGesturePoint\u003c\/strong\u003e : 是手势笔划中的一个点,包含X轴,Y轴的坐标,还有时间戳.\n\u003cstrong\u003eGestureStroke\u003c\/strong\u003e : 手势笔划,可以理解为线,由多个点组成的.\n\u003cstrong\u003eGesture\u003c\/strong\u003e : 手势,代表用户的一个手势,可以由一个或者多个手势笔划组成.\n\u003cstrong\u003eGestureStore\u003c\/strong\u003e 手势仓库,里面存储了多个手势样本\u003c\/p\u003e\n\u003chr\u003e\n\u003ch3 id=\u0022手势的使用\u0022\u003e手势的使用\u003c\/h3\u003e\n\u003cp\u003e使用手势的过程都是先从GestureLibrary开始,那么看看GestureLibrary的关系图.\u003c\/p\u003e\n\u003cimg alt=\u002214937957345949.jpg\u0022 loading=\u0022lazy\u0022 src=\u0022\/posts\/android-gesture-%E6%89%8B%E5%8A%BF%E7%A0%94%E7%A9%B6\/image_01.webp\u0022\u003e\u003cp\u003e从图中看,GestureLibrary的实现有两种,一个File的实现,另外一个是由资源Resource实现,说明我们的手势库可有两个方向可以构造.\u003c\/p\u003e\n\u003cp\u003e然后看回GestureLibrary的源码\u003c\/p\u003e\n\u003cpre tabindex=\u00220\u0022\u003e\u003ccode\u003epublic abstract class GestureLibrary {\n     protected final GestureStore mStore;\n     ...\n}\n\u003c\/code\u003e\u003c\/pre\u003e\u003cp\u003e里面只有一个对象,而所有的方法都是由这个对象实现,也就是GestureLibrary其实是GestureStore的代理类,而真正的功能其实是在GestureStore里.\u003c\/p\u003e",
+  "url": "http:\/\/localhost:1313\/posts\/android-gesture-%E6%89%8B%E5%8A%BF%E7%A0%94%E7%A9%B6\/",
+  "publisher": {
+    "@type": "Organization",
+    "name": "Steven\u0027s Blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "http:\/\/localhost:1313\/img\/logo.png"
+    }
+  },"datePublished": "2017-05-05T13:15:33Z","keywords": "源码解读, Android","articleSection": "移动开发"}
+</script>
 <script async defer data-website-id="70beee45-da0f-44e1-8b5b-0233aec057dd" src="https://cloud.umami.is/script.js"></script>
 </head>
 
@@ -280,8 +531,7 @@ score越高代表越匹配.
 <hr>
 <h3 id="手势的使用">手势的使用<a hidden class="anchor" aria-hidden="true" href="#手势的使用">#</a></h3>
 <p>使用手势的过程都是先从GestureLibrary开始,那么看看GestureLibrary的关系图.</p>
-<p><img alt="14937957345949.jpg" loading="lazy" src="/posts/android-gesture-%E6%89%8B%E5%8A%BF%E7%A0%94%E7%A9%B6/image_01.webp"></p>
-<p>从图中看,GestureLibrary的实现有两种,一个File的实现,另外一个是由资源Resource实现,说明我们的手势库可有两个方向可以构造.</p>
+<img alt="14937957345949.jpg" loading="lazy" src="/posts/android-gesture-%E6%89%8B%E5%8A%BF%E7%A0%94%E7%A9%B6/image_01.webp"><p>从图中看,GestureLibrary的实现有两种,一个File的实现,另外一个是由资源Resource实现,说明我们的手势库可有两个方向可以构造.</p>
 <p>然后看回GestureLibrary的源码</p>
 <pre tabindex="0"><code>public abstract class GestureLibrary {
      protected final GestureStore mStore;

@@ -9,10 +9,12 @@ theme = "PaperMod"
 
 enableInlineShortcodes = true
 enableRobotsTXT = true
+enableGitInfo = true
 
 buildDrafts = false
 buildFuture = false
 buildExpired = false
+
 
 [pagination]
   pagerSize = 10
@@ -47,6 +49,29 @@ buildExpired = false
   
   # 启用评论功能
   comments = true
+  
+  # SEO 优化配置
+  keywords = ["技术博客", "Android开发", "移动开发", "源码分析", "学习笔记"]
+  
+  # 社交媒体配置
+  [params.socials]
+    github = "steven2947"
+    email = "steven2947@163.com"
+  
+  # Open Graph 配置
+  [params.openGraph]
+    image = "/img/og-image.jpg"
+    imageWidth = 1200
+    imageHeight = 630
+
+  
+  # 结构化数据配置
+  [params.structuredData]
+    enable = true
+    type = "Blog"
+    publisher = "Steven's Blog"
+    publisherLogo = "/img/logo.png"
+  
 
 [params.giscus]
   repo = "steven2947/blog-comments"           # GitHub 仓库
@@ -103,16 +128,20 @@ buildExpired = false
   url = "steven2947@163.com"
 
 # ======================
-# Markdown 渲染优化
+# Markdown 渲染优化 
 # ======================
+
+# SEO 优化
 [markup]
   [markup.goldmark]
     [markup.goldmark.renderer]
       unsafe = true # 允许在文章里写 HTML
+      hardWraps = false # 自动生成目录链接
+    [markup.goldmark.parser]
+      wrapStandAloneImageWithinParagraph = false # 自动生成标题 ID
   [markup.highlight]
     noClasses = false
     style = "monokai" # 代码高亮主题，可换为 dracula, github, etc.
-
 
 # ======================
 # Umami Cloud 数据追踪
