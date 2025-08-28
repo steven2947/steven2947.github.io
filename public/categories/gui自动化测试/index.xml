@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>GUI自动化测试 on 我的个人博客</title>
+    <link>http://localhost:1313/categories/gui%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/</link>
+    <description>Recent content in GUI自动化测试 on 我的个人博客</description>
+    <generator>Hugo</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Thu, 25 Jul 2019 11:55:33 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/categories/gui%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Katalon Studio</title>
+      <link>http://localhost:1313/posts/katalon-studio-%E5%85%A5%E9%97%A8/</link>
+      <pubDate>Thu, 25 Jul 2019 11:55:33 +0000</pubDate>
+      <guid>http://localhost:1313/posts/katalon-studio-%E5%85%A5%E9%97%A8/</guid>
+      <description></description>
+    </item>
+  </channel>
+</rss>
