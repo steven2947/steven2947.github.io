@@ -27,7 +27,7 @@ jobs:
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
-          personal_token: ${{ secrets.GITHUB_TOKEN }}
+          personal_token: ${{ secrets.HUGO_DEPLOY_TOKEN }}
           external_repository: steven2947/steven2947.github.io  # 例如: johnsmith/johnsmith.github.io
           publish_dir: ./public
           keep_files: false
