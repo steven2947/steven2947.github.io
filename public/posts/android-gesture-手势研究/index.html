@@ -1,138 +1,9 @@
 <!DOCTYPE html>
 <html lang="en" dir="auto">
 
-<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="noindex, nofollow">
-<title>Android Gesture 手势研究 | Steven&#39;s Blog</title>
-<meta name="keywords" content="源码解读, Android">
-<meta name="description" content="怎么理解一个手势,就是在屏幕上,手画一个符号就是一个手势,它代表了用户的一个意图,也就是用户希望程序做点什么,一般程序大多数是通过按钮,按钮上有对应的文字,这样进行人机交互,而手势也是很多地方会使用到,而常用的手势好像下拉刷新,用户希望列表内容下拉一下就有新的信息,双指缩放等等,一般这些手势都是跟对应的view绑定起来,而今天介绍的都是方法是可以不绑定view,直接在界面上画一个手势就可以人机交互.实现的代码可以在github上的Demo源码了解.
-这篇手势研究会大概分三部分
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+<script async defer data-website-id="70beee45-da0f-44e1-8b5b-0233aec057dd" src="https://cloud.umami.is/script.js"></script>
 
-手势Gesture使用方式
-展示手势开发的步骤及代码实现
-分析Gesture的源码及原理
-
-
-
-使用的方式
-首先我们需要把用户需要使用到的手势提前记录下来,准备一些手势的样本,在app安装时随着资源文件或者下载等方式存储到用户的手机里,当用户在app画一个手势时,就去匹配手势样本,当时样本最吻合时,就知道用户的意图,采取执行对应的功能,这样就是个很好的人机交互的方式.
-从上文使用方式,我们大概猜想到,我们需要一个东西,用来管理和读取我们已经存储的手势样本,我们还要需要这个东西可以设别用户的手势跟我们已经存储的手势进行匹配.还有,我们需一个东西在app的界面上记录用户的手势,没错,两个东西都存在,就是GestureLibrary和GestureOverlayView,这两个类就是手势开发里使用的主要两个类,通过这两个类,我们就可以实现手势开发的所有功能,是不是很简单.
-总结一下:
-
-
-提前准备好手势样本,在安装时加入到资源文件或者安装后网络下载.
-
-
-
-需要使用手势的界面里使用GestureOverlayView记录用户的手势,
-
-
-
-使用GestureLibrary对象对用户的手势进行监听和匹配,找到用户手势的意图,执行对应的功能
-
-
-
-
-步骤及代码实现
-
-
-手势库的初始化
-GestureLibrary gLib=GestureLibraries.fromFile(手势库文件); gLib.load(); 
-这个过程是读取已经存储手势样本文件,构造出GestureLibrary实例的过程,需要第一步实现.
-
-
-对用户手势的监听
-GestureOverlayView.addOnGesturePerformedListener() 
-
-
-使用GestureLibrary对用户的手势进行匹配
-recognize(Gesture gesture)
-
-
-循环遍历返回的ArrayList对象，使用Prediction的score来匹配手势的相似度，
-score越高代表越匹配.
-Prediction.score()
-
-
-这里就是手势开发的实现的全部内容,但是作为一个程序猿,需要知其然知其所以然,就要对源码进行解剖.
-
-原理
-手势的结构
-手势是用户在屏幕上画的符号,那么手势可以简单的一笔笔画,例如一个方向的箭头(&gt;),也可以多笔划,很复杂,例如一个文字.这些都手势,所以我们就知道
-
-手势是由一个或者多个笔画组成
-学过数学的我们都到线是由点组成的,所以
-
-一个手势笔画是由多个时间连续的点组成
-一个点意味着什么呢,它会固定在屏幕的某个地方,还需要时间连续不断,所以
-
-手势中的点包含坐标X轴和Y轴,还有时间戳
-所以我们就很容易了解手势对应的文件了
-GesturePoint : 是手势笔划中的一个点,包含X轴,Y轴的坐标,还有时间戳.
-GestureStroke : 手势笔划,可以理解为线,由多个点组成的.
-Gesture : 手势,代表用户的一个手势,可以由一个或者多个手势笔划组成.
-GestureStore 手势仓库,里面存储了多个手势样本
-
-手势的使用
-使用手势的过程都是先从GestureLibrary开始,那么看看GestureLibrary的关系图.
-
-从图中看,GestureLibrary的实现有两种,一个File的实现,另外一个是由资源Resource实现,说明我们的手势库可有两个方向可以构造.
-然后看回GestureLibrary的源码
-public abstract class GestureLibrary {
-     protected final GestureStore mStore;
-     ...
-}
-里面只有一个对象,而所有的方法都是由这个对象实现,也就是GestureLibrary其实是GestureStore的代理类,而真正的功能其实是在GestureStore里.">
-<meta name="author" content="你的名字">
-<link rel="canonical" href="http://localhost:1313/posts/android-gesture-%E6%89%8B%E5%8A%BF%E7%A0%94%E7%A9%B6/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.8fe10233a706bc87f2e08b3cf97b8bd4c0a80f10675a143675d59212121037c0.css" integrity="sha256-j&#43;ECM6cGvIfy4Is8&#43;XuL1MCoDxBnWhQ2ddWSEhIQN8A=" rel="preload stylesheet" as="style">
-<link rel="icon" href="http://localhost:1313/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
-<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
-<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
-<meta name="theme-color" content="#2e2e33">
-<meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="en" href="http://localhost:1313/posts/android-gesture-%E6%89%8B%E5%8A%BF%E7%A0%94%E7%A9%B6/">
-<noscript>
-    <style>
-        #theme-toggle,
-        .top-link {
-            display: none;
-        }
-
-    </style>
-    <style>
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --theme: rgb(29, 30, 32);
-                --entry: rgb(46, 46, 51);
-                --primary: rgb(218, 218, 219);
-                --secondary: rgb(155, 156, 157);
-                --tertiary: rgb(65, 66, 68);
-                --content: rgb(196, 196, 197);
-                --code-block-bg: rgb(46, 46, 51);
-                --code-bg: rgb(55, 56, 62);
-                --border: rgb(51, 51, 51);
-            }
-
-            .list {
-                background: var(--theme);
-            }
-
-            .list:not(.dark)::-webkit-scrollbar-track {
-                background: 0 0;
-            }
-
-            .list:not(.dark)::-webkit-scrollbar-thumb {
-                border-color: var(--theme);
-            }
-        }
-
-    </style>
-</noscript>
 </head>
 
 <body class="" id="top">
@@ -191,6 +62,11 @@ public abstract class GestureLibrary {
                 </a>
             </li>
             <li>
+                <a href="http://localhost:1313/search/" title="搜索">
+                    <span>搜索</span>
+                </a>
+            </li>
+            <li>
                 <a href="http://localhost:1313/about/" title="关于">
                     <span>关于</span>
                 </a>
@@ -206,10 +82,42 @@ public abstract class GestureLibrary {
     <h1 class="post-title entry-hint-parent">
       Android Gesture 手势研究
     </h1>
-    <div class="post-meta"><span title='2017-05-05 13:15:33 +0000 UTC'>May 5, 2017</span>&nbsp;·&nbsp;6 min&nbsp;·&nbsp;你的名字
+    <div class="post-meta"><span title='2017-05-05 13:15:33 +0000 UTC'>May 5, 2017</span>&nbsp;·&nbsp;6 min&nbsp;·&nbsp;Steven
 
 </div>
-  </header> 
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#%e4%bd%bf%e7%94%a8%e7%9a%84%e6%96%b9%e5%bc%8f" aria-label="使用的方式">使用的方式</a></li>
+                <li>
+                    <a href="#%e6%ad%a5%e9%aa%a4%e5%8f%8a%e4%bb%a3%e7%a0%81%e5%ae%9e%e7%8e%b0" aria-label="步骤及代码实现">步骤及代码实现</a></li>
+                <li>
+                    <a href="#%e5%8e%9f%e7%90%86" aria-label="原理">原理</a><ul>
+                        
+                <li>
+                    <a href="#%e6%89%8b%e5%8a%bf%e7%9a%84%e7%bb%93%e6%9e%84" aria-label="手势的结构">手势的结构</a></li>
+                <li>
+                    <a href="#%e6%89%8b%e5%8a%bf%e7%9a%84%e4%bd%bf%e7%94%a8" aria-label="手势的使用">手势的使用</a><ul>
+                        
+                <li>
+                    <a href="#%e6%89%8b%e5%8a%bf%e7%9a%84%e5%8c%b9%e9%85%8d" aria-label="手势的匹配">手势的匹配</a></li></ul>
+                </li></ul>
+                </li>
+                <li>
+                    <a href="#%e4%bd%9c%e8%80%85%e4%bf%a1%e6%81%af" aria-label="作者信息">作者信息</a></li>
+                <li>
+                    <a href="#promotion" aria-label="Promotion">Promotion</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
   <div class="post-content"><p>怎么理解一个手势,就是在屏幕上,手画一个符号就是一个手势,它代表了用户的一个意图,也就是用户希望程序做点什么,一般程序大多数是通过按钮,按钮上有对应的文字,这样进行人机交互,而手势也是很多地方会使用到,而常用的手势好像下拉刷新,用户希望列表内容下拉一下就有新的信息,双指缩放等等,一般这些手势都是跟对应的view绑定起来,而今天介绍的都是方法是可以不绑定view,直接在界面上画一个手势就可以人机交互.实现的代码可以在<a href="https://github.com/steven2947/gestureDemo">github上的Demo源码</a>了解.</p>
 <p>这篇手势研究会大概分三部分</p>
 <ol>

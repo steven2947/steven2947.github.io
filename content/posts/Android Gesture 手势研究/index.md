@@ -2,6 +2,7 @@
 title: Android Gesture 手势研究
 date: 2017-05-05 13:15:33
 draft: false
+toc: true # 启用目录
 categories: ["移动开发"]
 tags: ["源码解读","Android"]
 ---
