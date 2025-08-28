@@ -42,6 +42,22 @@ buildExpired = false
   # 页面底部版权
   copyright = "© 2025 Steven"
 
+[params.comment]
+  provider = "giscus"
+  repo = "steven2947/blog-comments"           # GitHub 仓库
+  repoID = "R_kgDOPlsQ9A"                     # Giscus 提供的 repo ID
+  category = "Announcements"                  # Issue 分类名称
+  categoryID = "DIC_kwDOPlsQ9M4CusfG"        # Giscus 提供的 category ID
+  mapping = "pathname"                        # 每篇文章对应一个 Issue
+  strict = false                              # 对应 data-strict="0"
+  reactionsEnabled = true                      # 对应 data-reactions-enabled="1"
+  emitMetadata = false                         # 对应 data-emit-metadata="0"
+  inputPosition = "bottom"                    # 对应 data-input-position="bottom"
+  theme = "preferred_color_scheme"            # 对应 data-theme
+  lang = "zh-CN"                              # 对应 data-lang
+  crossorigin = "anonymous"                   # 对应 crossorigin
+  async = true                                # 对应 async
+
 # ======================
 # 菜单配置
 # ======================
